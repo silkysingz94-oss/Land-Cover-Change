@@ -3,205 +3,212 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GBoS GEOAI | Gambia Urban Heat Island Intelligence</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<title>GBoS GEOAI | Gambia Land-Cover Change Intelligence</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
 <style>
 :root{
-  --green:#14532d;
-  --dark:#123c32;
-  --green2:#166534;
-  --light:#f3f7f4;
-  --border:#dce5df;
-  --text:#24352d;
-  --muted:#718078;
-  --blue:#2563eb;
+ --navy:#10283f;
+ --blue:#176b87;
+ --bg:#edf2f6;
+ --border:#d8e0e7;
+ --muted:#647586;
 }
+
 *{box-sizing:border-box}
+
 body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#edf2ee;
-  color:var(--text);
+ margin:0;
+ font-family:Arial,Helvetica,sans-serif;
+ background:var(--bg);
+ color:#172b3a;
 }
+
 header{
-  background:linear-gradient(110deg,#123c32,#166534);
-  color:white;
-  padding:17px 22px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  flex-wrap:wrap;
+ background:var(--navy);
+ color:white;
+ padding:19px 22px;
 }
-header h1{font-size:21px;margin:0 0 5px}
-header p{font-size:12px;margin:0;color:#d9eee0}
-.header-tag{
-  border:1px solid #ffffff55;
-  border-radius:20px;
-  padding:7px 12px;
-  font-size:11px;
+
+header h1{
+ margin:0 0 7px;
+ font-size:22px;
+ letter-spacing:.4px;
 }
-main{
-  display:grid;
-  grid-template-columns:minmax(260px,1fr) minmax(400px,1fr) minmax(260px,1fr);
-  gap:12px;
-  padding:12px;
-  height:calc(100vh - 78px);
-  min-height:650px;
+
+header p{
+ margin:0;
+ color:#d2e1eb;
+ font-size:13px;
 }
+
+.layout{
+ display:grid;
+ grid-template-columns:1fr 1fr 1fr;
+ gap:12px;
+ padding:12px;
+ height:calc(100vh - 100px);
+}
+
 .panel{
-  background:white;
-  border:1px solid var(--border);
-  border-radius:10px;
-  min-width:0;
-  min-height:0;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
+ min-width:0;
+ background:white;
+ border:1px solid var(--border);
+ border-radius:9px;
+ padding:14px;
+ overflow:auto;
 }
-.panel-heading{
-  background:#f7faf8;
-  border-bottom:1px solid var(--border);
-  padding:13px 15px;
-  font-size:13px;
-  font-weight:bold;
-  color:var(--dark);
-  flex-shrink:0;
+
+.panel h2{
+ font-size:16px;
+ color:var(--navy);
+ margin:0 0 13px;
 }
-.panel-content{
-  padding:14px;
-  overflow-y:auto;
-  min-height:0;
-  flex:1;
+
+.panel h3{
+ font-size:14px;
+ margin-top:18px;
 }
-.section{
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:12px;
-  margin-bottom:13px;
-}
-.section h3{
-  font-size:12px;
-  margin:0 0 12px;
-  color:var(--green);
-  text-transform:uppercase;
-  letter-spacing:.35px;
-}
+
 label{
-  display:block;
-  font-size:11px;
-  font-weight:bold;
-  margin:10px 0 5px;
-  color:#4a5c51;
+ display:block;
+ font-size:12px;
+ font-weight:bold;
+ margin:12px 0 5px;
 }
-select,input{
-  width:100%;
-  padding:9px;
-  border:1px solid #ccd8d0;
-  border-radius:6px;
-  background:white;
-  color:#26382e;
-  font-size:12px;
+
+select,button{
+ width:100%;
+ padding:10px;
+ border:1px solid #cbd6df;
+ border-radius:6px;
+ background:white;
+ font-size:13px;
 }
+
 button{
-  border:0;
-  border-radius:6px;
-  padding:10px 12px;
-  font-weight:bold;
-  font-size:11px;
-  cursor:pointer;
+ background:var(--blue);
+ color:white;
+ border:0;
+ cursor:pointer;
+ margin-top:9px;
+ font-weight:bold;
 }
-button:disabled{opacity:.5;cursor:not-allowed}
-.btn-primary{background:var(--green);color:white;width:100%}
-.btn-secondary{background:#e8f1eb;color:var(--green);width:100%}
-.btn-blue{background:#eaf1ff;color:#1d4ed8;width:100%}
-.button-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.status{
-  background:#f4f7f5;
-  border-left:3px solid #94a3b8;
-  padding:9px;
-  font-size:11px;
-  line-height:1.5;
-  margin-top:10px;
-  border-radius:4px;
-  overflow-wrap:anywhere;
+
+button.secondary{
+ background:#566b7c;
 }
-.status.good{border-color:#16a34a}
-.status.bad{border-color:#dc2626}
-.status.warn{border-color:#d97706}
-.small-note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:8px}
-#map{height:100%;width:100%;background:#e8eee9;min-height:500px}
-.map-panel{position:relative}
-.map-toolbar{
-  padding:9px 12px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
-  background:white;
+
+button:disabled{
+ opacity:.5;
+ cursor:not-allowed;
 }
-.map-toolbar select{width:auto;min-width:130px;padding:7px}
-.map-toolbar span{font-size:11px;color:#526359;font-weight:bold}
-.map-wrap{flex:1;min-height:0;position:relative}
-.map-footer{
-  padding:7px 11px;
-  background:#f7faf8;
-  font-size:10px;
-  color:#66766c;
-  border-top:1px solid var(--border);
+
+.map-panel{
+ display:flex;
+ flex-direction:column;
+ overflow:hidden;
 }
-.kpi-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-  margin-bottom:13px;
+
+.map-panel h2{
+ flex:none;
 }
+
+.map-container{
+ flex:1;
+ min-height:350px;
+}
+
+#map{
+ width:100%;
+ height:100%;
+ min-height:350px;
+ border-radius:7px;
+}
+
+.kpis{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:9px;
+}
+
 .kpi{
-  background:#f5f8f6;
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:11px;
+ padding:12px;
+ background:#f1f6f8;
+ border-radius:7px;
 }
-.kpi span{display:block;font-size:10px;color:#718078;margin-bottom:6px}
-.kpi strong{font-size:19px;color:var(--dark);overflow-wrap:anywhere}
-.kpi small{font-size:9px;color:#7b8981}
-.legend-row{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:11px;
-  margin:8px 0;
+
+.kpi small{
+ display:block;
+ color:var(--muted);
+ font-size:11px;
 }
-.swatch{width:24px;height:13px;border:1px solid #999;border-radius:2px;flex-shrink:0}
-#legendTitle{font-size:12px;font-weight:bold;color:var(--dark);margin-bottom:8px}
-.legend-note{font-size:10px;color:#718078;line-height:1.5;margin-top:8px}
-.chart-box{height:210px;position:relative}
-.info-text{font-size:11px;line-height:1.65;color:#53645a}
-.info-text strong{color:#294b39}
+
+.kpi strong{
+ display:block;
+ font-size:19px;
+ margin-top:6px;
+ color:var(--navy);
+}
+
+.chartbox{
+ position:relative;
+ height:225px;
+ margin:12px 0 20px;
+}
+
+.status{
+ color:var(--muted);
+ font-size:11px;
+ line-height:1.6;
+ margin-top:12px;
+ overflow-wrap:anywhere;
+}
+
+.legend{
+ background:white;
+ padding:9px;
+ border-radius:6px;
+ line-height:1.8;
+ box-shadow:0 1px 5px #777;
+ font-size:11px;
+}
+
+.swatch{
+ display:inline-block;
+ width:12px;
+ height:12px;
+ margin-right:6px;
+ vertical-align:middle;
+}
+
 footer{
-  background:#102f27;
-  color:#d9e7de;
-  padding:12px 18px;
-  font-size:10px;
-  line-height:1.6;
-  text-align:center;
+ padding:10px 15px;
+ color:#61717f;
+ font-size:11px;
+ background:white;
+ border-top:1px solid var(--border);
 }
-.leaflet-control-attribution{font-size:9px!important}
-@media(max-width:1050px){
-  main{grid-template-columns:1fr 1.3fr;height:auto;min-height:0}
-  .analytics-panel{grid-column:1/-1}
-  .panel{min-height:550px}
-  .map-panel{min-height:600px}
-}
-@media(max-width:700px){
-  main{display:flex;flex-direction:column;height:auto}
-  .panel{min-height:420px}
-  .map-panel{min-height:550px}
-  .analytics-panel{min-height:500px}
+
+@media(max-width:950px){
+ .layout{
+  height:auto;
+  grid-template-columns:1fr;
+ }
+ .panel{
+  min-height:300px;
+ }
+ .map-panel{
+  height:550px;
+ }
 }
 </style>
 </head>
@@ -209,1232 +216,923 @@ footer{
 <body>
 
 <header>
-  <div>
-    <h1>GBoS GEOAI | Gambia Urban Heat Island Intelligence</h1>
-    <p>Satellite Indices • Urban Surface Monitoring • Administrative Area Analysis</p>
-  </div>
-  <div class="header-tag">GIS / CARTOGRAPHY UNIT • GBoS</div>
+ <h1>GAMBIA PERSISTENT LAND-COVER CHANGE INTELLIGENCE</h1>
+ <p>
+  GBoS GEOAI | Satellite Remote Sensing |
+  Spatial Distribution | Land-Cover Dynamics | 2017–2026
+ </p>
 </header>
 
-<main>
+<main class="layout">
 
-<!-- LEFT: CONTROLS -->
+<!-- ===================================================
+     CONTROLS
+==================================================== -->
+
 <section class="panel">
-  <div class="panel-heading">01 · Controls and Processing</div>
-  <div class="panel-content">
 
-    <div class="section">
-      <h3>Administrative boundary data</h3>
-      <label>GitHub JSON source</label>
-      <input id="jsonUrl" type="text"
-        value="https://raw.githubusercontent.com/silkysingz94-oss/URBAN-HEAT-ISLAND-INTELLIGENCE/main/Census_EAs_Geo.json">
+ <h2>Controls</h2>
 
-      <button class="btn-primary" id="loadBoundaryBtn" style="margin-top:10px">
-        LOAD ADMINISTRATIVE BOUNDARIES
-      </button>
+ <label>Region</label>
+ <select id="region">
+  <option value="">All regions</option>
+ </select>
 
-      <div id="boundaryStatus" class="status">Waiting to load the JSON boundary file.</div>
-      <div class="small-note">
-        The application reads the JSON file directly from the public GitHub repository.
-        The file can contain GeoJSON or ArcGIS-style polygon geometries.
-      </div>
-    </div>
+ <label>Local Government Area</label>
+ <select id="lga">
+  <option value="">All LGAs</option>
+ </select>
 
-    <div class="section">
-      <h3>Select administrative area</h3>
+ <label>District</label>
+ <select id="district">
+  <option value="">All districts</option>
+ </select>
 
-      <label>Region</label>
-      <select id="regionSelect" disabled><option value="">All regions</option></select>
+ <label>Ward</label>
+ <select id="ward">
+  <option value="">All wards</option>
+ </select>
 
-      <label>LGA</label>
-      <select id="lgaSelect" disabled><option value="">All LGAs</option></select>
+ <label>Enumeration Area</label>
+ <select id="ea">
+  <option value="">All EAs</option>
+ </select>
 
-      <label>District</label>
-      <select id="districtSelect" disabled><option value="">All districts</option></select>
+ <label>Analysis period</label>
+ <select id="period">
+  <option value="2017">2017 baseline</option>
+  <option value="2026">2026 year-to-date</option>
+  <option value="change">2017–2026 change</option>
+ </select>
 
-      <label>Ward</label>
-      <select id="wardSelect" disabled><option value="">All wards</option></select>
+ <label>Basemap</label>
+ <select id="basemap">
+  <option value="street">Street</option>
+  <option value="satellite">Satellite</option>
+  <option value="terrain">Terrain</option>
+ </select>
 
-      <label>Enumeration Area</label>
-      <select id="eaSelect" disabled><option value="">All enumeration areas</option></select>
+ <button id="apply">Apply selection</button>
+ <button class="secondary" id="reset">Reset filters</button>
+ <button class="secondary" id="download">Export EA statistics CSV</button>
 
-      <button class="btn-secondary" id="showAreaBtn" style="margin-top:12px" disabled>
-        SHOW SELECTED AREA
-      </button>
-      <div id="selectionStatus" class="status">Load boundaries to activate the selectors.</div>
-    </div>
+ <div class="status" id="status">
+  Loading boundaries and land-cover statistics...
+ </div>
 
-    <div class="section">
-      <h3>Stage 2 · Satellite imagery</h3>
-
-      <label>Satellite product / index</label>
-      <select id="indexSelect">
-        <option value="NDVI Raw">NDVI — Vegetation Index</option>
-        <option value="NDVI Colormap">NDVI — Colormap</option>
-        <option value="NDMI Colorized">NDMI — Moisture Index</option>
-        <option value="Normalized Difference Built-Up Index (NDBI)">NDBI — Built-up Index</option>
-        <option value="NDWI Raw">NDWI — Water Index</option>
-        <option value="NDVI - with VRE Raw">NDRE — Red Edge Index</option>
-        <option value="Normalized Burn Ratio">NBR — Burn Ratio</option>
-        <option value="Natural Color with DRA">Natural Colour</option>
-        <option value="Color Infrared with DRA">Colour Infrared</option>
-        <option value="Agriculture with DRA">Agriculture Composite</option>
-        <option value="Short-wave Infrared with DRA">Short-wave Infrared</option>
-        <option value="Geology with DRA">Geology Composite</option>
-      </select>
-
-      <label>Imagery transparency</label>
-      <input id="opacitySlider" type="range" min="20" max="100" value="100">
-      <div class="small-note">Opacity: <span id="opacityValue">100%</span></div>
-
-      <button class="btn-primary" id="loadImageBtn" style="margin-top:12px">
-        LOAD SATELLITE IMAGE
-      </button>
-      <button class="btn-secondary" id="clearImageBtn" style="margin-top:8px">
-        CLEAR SATELLITE IMAGE
-      </button>
-
-      <div id="imageStatus" class="status">
-        Select an index and click LOAD SATELLITE IMAGE.
-      </div>
-      <div class="small-note">
-        Sentinel-2 does not contain thermal infrared bands. NDVI, NDMI, NDBI and
-        other spectral indices are indicators, not direct land-surface temperature
-        measurements. Use Landsat or MODIS thermal data for LST analysis.
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>Map display</h3>
-      <label>Display mode</label>
-      <select id="displayMode">
-        <option value="selected">Show imagery inside selected area</option>
-        <option value="extent">Show imagery across selected area extent</option>
-      </select>
-
-      <label>Basemap</label>
-      <select id="basemapSelect">
-        <option value="HYBRID">HYBRID</option>
-        <option value="SATELLITE">SATELLITE</option>
-        <option value="ROADMAP">ROADMAP</option>
-        <option value="TERRAIN">TERRAIN</option>
-      </select>
-
-      <div class="small-note">
-        Selected-area mode uses a transparent boundary window. Extent mode displays
-        the satellite image across the selected area's map extent.
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>Reset</h3>
-      <button class="btn-blue" id="resetBtn">RESET DASHBOARD</button>
-    </div>
-
-  </div>
 </section>
 
-<!-- CENTRE: MAP -->
+
+<!-- ===================================================
+     INTERACTIVE MAP
+==================================================== -->
+
 <section class="panel map-panel">
-  <div class="panel-heading">02 · Interactive Satellite Map</div>
-  <div class="map-toolbar">
-    <span>MAP BASEMAP</span>
-    <select id="mapBasemapQuick">
-      <option value="HYBRID">HYBRID</option>
-      <option value="SATELLITE">SATELLITE</option>
-      <option value="ROADMAP">ROADMAP</option>
-      <option value="TERRAIN">TERRAIN</option>
-    </select>
-    <span id="mapAreaLabel">The Gambia</span>
-  </div>
-  <div class="map-wrap"><div id="map"></div></div>
-  <div class="map-footer">
-    Imagery: Esri Sentinel-2 ImageServer | Boundaries: GBoS GitHub JSON
-  </div>
+
+ <h2>Interactive Map</h2>
+
+ <div class="map-container">
+  <div id="map"></div>
+ </div>
+
 </section>
 
-<!-- RIGHT: ANALYTICS -->
-<section class="panel analytics-panel">
-  <div class="panel-heading">03 · Analytics and Legend</div>
-  <div class="panel-content">
 
-    <div class="section">
-      <h3>Selected area statistics</h3>
-      <div class="kpi-grid">
-        <div class="kpi"><span>Selected EA features</span><strong id="kpiEA">0</strong><small>Polygon features</small></div>
-        <div class="kpi"><span>Population</span><strong id="kpiPop">—</strong><small>Available boundary attributes</small></div>
-        <div class="kpi"><span>Households</span><strong id="kpiHH">—</strong><small>Available boundary attributes</small></div>
-        <div class="kpi"><span>Selected index</span><strong id="kpiIndex" style="font-size:13px">NDVI</strong><small>Current raster function</small></div>
-      </div>
-    </div>
+<!-- ===================================================
+     ANALYTICS
+==================================================== -->
 
-    <div class="section">
-      <h3>Satellite index legend</h3>
-      <div id="legendTitle">NDVI — Vegetation Index</div>
-      <div id="dynamicLegend"></div>
-      <div class="legend-note" id="legendNote">
-        Legend is based on the selected index. It is a visual interpretation guide,
-        not a pixel-by-pixel statistical classification of the selected area.
-      </div>
-    </div>
+<section class="panel">
 
-    <div class="section">
-      <h3>Population and households</h3>
-      <div class="chart-box"><canvas id="populationChart"></canvas></div>
-      <div class="small-note">
-        Chart uses population and household attributes in the selected boundary features.
-      </div>
-    </div>
+ <h2>Analytics</h2>
 
-    <div class="section">
-      <h3>About this dashboard</h3>
-      <div class="info-text">
-        This dashboard provides an interactive interface for examining Sentinel-2
-        satellite imagery and spectral indicators across administrative areas in
-        The Gambia. Users can select a Region, LGA, District, Ward or Enumeration
-        Area and display the corresponding satellite image and boundary features.
-        <br><br>
-        <strong>NDVI:</strong> vegetation greenness and density indicator.
-        <br><strong>NDMI:</strong> vegetation moisture indicator.
-        <br><strong>NDBI:</strong> built-up surface indicator.
-        <br><strong>NDWI:</strong> water-related spectral indicator.
-        <br><strong>NDRE:</strong> red-edge vegetation indicator.
-        <br><strong>NBR:</strong> burn-related spectral indicator.
-      </div>
-    </div>
+ <div class="kpis">
 
-    <div class="section">
-      <h3>Methodology and limitations</h3>
-      <div class="info-text">
-        Satellite imagery is requested from the Esri Sentinel-2 ImageServer using
-        its published raster functions. The selected administrative features are
-        retrieved from the GitHub JSON file. In selected-area mode, a map overlay
-        hides imagery outside the selected polygons.
-        <br><br>
-        The map overlay is a display mask; it does not perform a raster clip or
-        calculate zonal statistics. The displayed image is not a direct measurement
-        of land-surface temperature. Image availability and appearance depend on
-        the satellite service, image dates, cloud cover and selected raster function.
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>Data sources</h3>
-      <div class="info-text">
-        • GBoS administrative / enumeration area JSON boundary file hosted on GitHub.
-        <br>• Esri Sentinel-2 ImageServer.
-        <br>• OpenStreetMap and Esri basemap services.
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>Credits</h3>
-      <div class="info-text">
-        <strong>Produced by Ansu Singhateh</strong><br>
-        GIS Analyst | GIS / Cartography Unit<br>
-        Gambia Bureau of Statistics
-        <br><br>
-        GBoS GEOAI • Research and educational use
-      </div>
-    </div>
-
+  <div class="kpi">
+   <small>Selected enumeration areas</small>
+   <strong id="totalEA">—</strong>
   </div>
+
+  <div class="kpi">
+   <small>Total mapped area (ha)</small>
+   <strong id="totalArea">—</strong>
+  </div>
+
+  <div class="kpi">
+   <small>Built-up area (ha)</small>
+   <strong id="builtArea">—</strong>
+  </div>
+
+  <div class="kpi">
+   <small>Crop area (ha)</small>
+   <strong id="cropArea">—</strong>
+  </div>
+
+ </div>
+
+ <h3>Land-cover composition</h3>
+
+ <div class="chartbox">
+  <canvas id="classChart"></canvas>
+ </div>
+
+ <h3>Built-up area comparison</h3>
+
+ <div class="chartbox">
+  <canvas id="builtChart"></canvas>
+ </div>
+
+ <h3>Land-cover classification</h3>
+
+ <div id="legend"></div>
+
+ <h3>Methodology</h3>
+
+ <div class="status" id="methodology">
+  Satellite observations are processed using Google Earth Engine
+  and Dynamic World V1. The annual modal land-cover class is
+  calculated from available observations.
+ </div>
+
+ <div class="status" id="generated"></div>
+
 </section>
 
 </main>
 
 <footer>
-  GBoS GEOAI | Gambia Urban Heat Island Intelligence<br>
-  Produced by Ansu Singhateh | GIS Analyst | GIS / Cartography Unit | Gambia Bureau of Statistics
+ Produced by Ansu Singhateh |
+ GIS Analyst | GIS / Cartography Unit |
+ Gambia Bureau of Statistics |
+ GBoS GEOAI • Research and educational use
 </footer>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/esri-leaflet@3.0.19/dist/esri-leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
 <script>
-/* =========================================================
-   CONFIGURATION
-========================================================= */
 
-const SENTINEL_URL =
-  "https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer";
+// ==========================================================
+// PUBLIC DATA SOURCES
+// ==========================================================
 
-const DEFAULT_JSON =
-  "https://raw.githubusercontent.com/silkysingz94-oss/URBAN-HEAT-ISLAND-INTELLIGENCE/main/Census_EAs_Geo.json";
+const EA_URL =
+"https://raw.githubusercontent.com/silkysingz94-oss/Land-Cover-Change/main/Census_EAs_Geo.json";
 
-const $ = id => document.getElementById(id);
+const STATS_URL = "./data/stats.json";
 
-let allFeatures = [];
-let selectedFeatures = [];
+const CLASS_NAMES = [
+ "Water",
+ "Trees",
+ "Grass",
+ "Flooded vegetation",
+ "Crops",
+ "Shrub and scrub",
+ "Built area",
+ "Bare ground",
+ "Snow and ice"
+];
+
+const COLORS = [
+ "#419BDF",
+ "#397D49",
+ "#88B053",
+ "#7A87C6",
+ "#E49635",
+ "#DFC35A",
+ "#C4281B",
+ "#A59B8F",
+ "#B39FE1"
+];
+
+
+// ==========================================================
+// APPLICATION STATE
+// ==========================================================
+
+let boundaries = [];
+let records = [];
+let statistics = null;
+
 let boundaryLayer = null;
-let imageLayer = null;
-let maskLayer = null;
-let baseLayers = {};
-let currentBasemap = null;
-let populationChart = null;
-let currentIndex = "NDVI Raw";
+let rasterLayer = null;
 
-/* =========================================================
-   MAP INITIALISATION
-========================================================= */
+let classChart = null;
+let builtChart = null;
+
+
+// ==========================================================
+// MAP
+// ==========================================================
 
 const map = L.map("map", {
-  zoomControl:true,
-  preferCanvas:true,
-  worldCopyJump:false
-}).setView([13.45,-15.45],8);
+ preferCanvas:true
+}).setView([13.45,-16.5],8);
 
-const osm = L.tileLayer(
+const basemaps = {
+
+ street:L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {maxZoom:19,attribution:"© OpenStreetMap"}
-);
+  {
+   maxZoom:19,
+   attribution:"© OpenStreetMap"
+  }
+ ),
 
-const satellite = L.tileLayer(
+ satellite:L.tileLayer(
   "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-  {maxZoom:19,attribution:"Tiles © Esri"}
-);
+  {
+   maxZoom:19,
+   attribution:"© Esri"
+  }
+ ),
 
-const labels = L.tileLayer(
-  "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",
-  {maxZoom:19,attribution:"Esri reference labels"}
-);
+ terrain:L.tileLayer(
+  "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+  {
+   maxZoom:17,
+   attribution:"© OpenTopoMap"
+  }
+ )
 
-const terrain = L.tileLayer(
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-  {maxZoom:19,attribution:"Tiles © Esri"}
-);
-
-baseLayers = {
-  ROADMAP:osm,
-  SATELLITE:satellite,
-  HYBRID:satellite,
-  TERRAIN:terrain
 };
 
-function setBasemap(name){
-  Object.values(baseLayers).forEach(layer=>{
-    if(map.hasLayer(layer)) map.removeLayer(layer);
-  });
-  if(map.hasLayer(labels)) map.removeLayer(labels);
+basemaps.street.addTo(map);
 
-  currentBasemap = name;
-  baseLayers[name].addTo(map);
-  if(name === "HYBRID") labels.addTo(map);
-  $("basemapSelect").value = name;
-  $("mapBasemapQuick").value = name;
-}
+boundaryLayer = L.geoJSON(null,{
+ style:{
+  color:"#ffffff",
+  weight:1,
+  fillColor:"#ffffff",
+  fillOpacity:0.02
+ },
+ onEachFeature:function(feature,layer){
+  layer.bindPopup(getPopup(feature.properties || {}));
+ }
+}).addTo(map);
 
-setBasemap("HYBRID");
 
-$("basemapSelect").addEventListener("change",e=>setBasemap(e.target.value));
-$("mapBasemapQuick").addEventListener("change",e=>setBasemap(e.target.value));
+// ==========================================================
+// PROPERTY FIELD HANDLING
+// ==========================================================
 
-/* =========================================================
-   PROPERTY HELPERS
-========================================================= */
+const FIELD_NAMES = {
 
-function propsOf(feature){
-  return feature && (feature.properties || feature.attributes || {}) || {};
-}
+ region:[
+  "RCO","rco","region","regionname","RCO_NAME"
+ ],
 
-function getProp(p,names){
-  for(const name of names){
-    if(p[name] !== undefined && p[name] !== null && String(p[name]).trim() !== ""){
-      return p[name];
-    }
-  }
-  const keys = Object.keys(p);
-  for(const name of names){
-    const found = keys.find(k=>k.toLowerCase() === name.toLowerCase());
-    if(found && p[found] !== undefined && p[found] !== null && String(p[found]).trim() !== ""){
-      return p[found];
-    }
-  }
-  return "";
-}
+ lga:[
+  "lganame","LGA","lga","lg_name"
+ ],
 
-const FIELD = {
-  region:["RCO","region","regionname","regional","region_name"],
-  lga:["lganame","LGA","lga_name","lgname"],
-  district:["distname","district","districtname","district_name"],
-  ward:["wardname","ward","ward_name"],
-  ea:["feacode","FEACODE","FEA_Code","eaname","ea_name","EA_CODE"],
-  population:["sum_pop","POP","pop","population","Population","total_pop"],
-  households:["sum_hhs","HH","hhs","households","Households","total_hh"]
+ district:[
+  "distname","district","districtname"
+ ],
+
+ ward:[
+  "wardname","ward","ward_name"
+ ],
+
+ ea:[
+  "feacode","FEACODE","FEA_Code","EA_code",
+  "eaname","ea_code"
+ ]
+
 };
 
-function value(feature,key){
-  return getProp(propsOf(feature),FIELD[key] || [key]);
+
+function getValue(properties,fields){
+
+ for(const field of fields){
+
+  if(
+   properties[field] !== undefined &&
+   properties[field] !== null &&
+   String(properties[field]).trim() !== ""
+  ){
+
+   return String(properties[field]);
+
+  }
+
+ }
+
+ return "";
+
 }
 
-function cleanString(v){
-  return String(v ?? "").trim();
+
+function getField(feature,key){
+
+ return getValue(
+  feature.properties || {},
+  FIELD_NAMES[key]
+ );
+
 }
 
-function uniqueValues(features,key){
-  const vals = features.map(f=>cleanString(value(f,key))).filter(Boolean);
-  return [...new Set(vals)].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+
+function unique(values){
+
+ return [...new Set(
+  values.filter(Boolean)
+ )].sort((a,b)=>a.localeCompare(b));
+
 }
 
-function populateSelect(id,values,placeholder){
-  const el = $(id);
-  const old = el.value;
-  el.innerHTML = "";
-  const first = document.createElement("option");
-  first.value = "";
-  first.textContent = placeholder;
-  el.appendChild(first);
 
-  values.forEach(v=>{
-    const o = document.createElement("option");
-    o.value = v;
-    o.textContent = v;
-    el.appendChild(o);
+function getPopup(p){
+
+ return `
+ <b>${getValue(p,["eaname","feacode","FEACODE"]) || "Enumeration Area"}</b>
+ <br>Region: ${getValue(p,["RCO","RCO_NAME"])}
+ <br>LGA: ${getValue(p,["lganame"])}
+ <br>District: ${getValue(p,["distname"])}
+ <br>Ward: ${getValue(p,["wardname"])}
+ `;
+
+}
+
+
+// ==========================================================
+// SELECTORS
+// ==========================================================
+
+function populateSelect(id,values,label){
+
+ const select = document.getElementById(id);
+
+ const previous = select.value;
+
+ select.innerHTML = "";
+
+ const first = document.createElement("option");
+
+ first.value = "";
+ first.textContent = label;
+
+ select.appendChild(first);
+
+ values.forEach(value=>{
+
+  const option = document.createElement("option");
+
+  option.value = value;
+  option.textContent = value;
+
+  select.appendChild(option);
+
+ });
+
+ if(values.includes(previous)){
+  select.value = previous;
+ }
+
+}
+
+
+function getFilters(){
+
+ return {
+
+  region:document.getElementById("region").value,
+  lga:document.getElementById("lga").value,
+  district:document.getElementById("district").value,
+  ward:document.getElementById("ward").value,
+  ea:document.getElementById("ea").value
+
+ };
+
+}
+
+
+function updateSelectors(){
+
+ const f = getFilters();
+
+ let current = boundaries;
+
+ populateSelect(
+  "region",
+  unique(current.map(x=>getField(x,"region"))),
+  "All regions"
+ );
+
+ current = current.filter(
+  x=>!f.region || getField(x,"region")===f.region
+ );
+
+ populateSelect(
+  "lga",
+  unique(current.map(x=>getField(x,"lga"))),
+  "All LGAs"
+ );
+
+ current = current.filter(
+  x=>!f.lga || getField(x,"lga")===f.lga
+ );
+
+ populateSelect(
+  "district",
+  unique(current.map(x=>getField(x,"district"))),
+  "All districts"
+ );
+
+ current = current.filter(
+  x=>!f.district || getField(x,"district")===f.district
+ );
+
+ populateSelect(
+  "ward",
+  unique(current.map(x=>getField(x,"ward"))),
+  "All wards"
+ );
+
+ current = current.filter(
+  x=>!f.ward || getField(x,"ward")===f.ward
+ );
+
+ populateSelect(
+  "ea",
+  unique(current.map(x=>getField(x,"ea"))),
+  "All EAs"
+ );
+
+}
+
+
+function getSelectedFeatures(){
+
+ const f = getFilters();
+
+ return boundaries.filter(feature=>{
+
+  return Object.entries(f).every(([key,value])=>{
+
+   return !value || getField(feature,key)===value;
+
   });
-  if(values.includes(old)) el.value = old;
+
+ });
+
 }
 
-function selectedFilter(){
-  const r = $("regionSelect").value;
-  const l = $("lgaSelect").value;
-  const d = $("districtSelect").value;
-  const w = $("wardSelect").value;
-  const e = $("eaSelect").value;
 
-  return allFeatures.filter(f=>{
-    return (!r || cleanString(value(f,"region")) === r) &&
-      (!l || cleanString(value(f,"lga")) === l) &&
-      (!d || cleanString(value(f,"district")) === d) &&
-      (!w || cleanString(value(f,"ward")) === w) &&
-      (!e || cleanString(value(f,"ea")) === e);
-  });
+// ==========================================================
+// STATISTICS
+// ==========================================================
+
+function recordsFor(features,year){
+
+ const codes = new Set(
+  features.map(x=>getField(x,"ea"))
+ );
+
+ return records.filter(r=>
+  codes.has(String(r.ea_code)) &&
+  Number(r.year)===Number(year)
+ );
+
 }
 
-/* =========================================================
-   GEOMETRY NORMALISATION
-========================================================= */
 
-function webMercatorToLonLat(x,y){
-  const lon = x / 20037508.34 * 180;
-  let lat = y / 20037508.34 * 180;
-  lat = 180 / Math.PI * (2 * Math.atan(Math.exp(lat * Math.PI / 180)) - Math.PI/2);
-  return [lon,lat];
+function sumClass(rows,classId){
+
+ return rows.reduce((total,row)=>{
+
+  const item = (row.classes || {})[String(classId)];
+
+  return total + Number(item?.area_ha || 0);
+
+ },0);
+
 }
 
-function convertCoordinatePair(pair,projected){
-  if(!Array.isArray(pair) || pair.length < 2) return pair;
-  const x = Number(pair[0]), y = Number(pair[1]);
-  if(!Number.isFinite(x) || !Number.isFinite(y)) return pair;
-  return projected ? webMercatorToLonLat(x,y) : [x,y];
+
+function formatNumber(value){
+
+ return Number(value || 0).toLocaleString(
+  undefined,
+  {maximumFractionDigits:1}
+ );
+
 }
 
-function convertCoords(coords,projected){
-  if(!Array.isArray(coords)) return coords;
-  if(coords.length >= 2 && typeof coords[0] === "number"){
-    return convertCoordinatePair(coords,projected);
+
+// ==========================================================
+// CHARTS
+// ==========================================================
+
+function updateCharts(selected,period){
+
+ const chartYear = period==="2017" ? 2017 : 2026;
+
+ const values = CLASS_NAMES.map(
+  (_,index)=>sumClass(selected,index)
+ );
+
+ if(classChart){
+  classChart.destroy();
+ }
+
+ classChart = new Chart(
+  document.getElementById("classChart"),
+  {
+   type:"doughnut",
+
+   data:{
+    labels:CLASS_NAMES,
+
+    datasets:[{
+     data:values,
+     backgroundColor:COLORS
+    }]
+   },
+
+   options:{
+    responsive:true,
+    maintainAspectRatio:false,
+
+    plugins:{
+     legend:{
+      position:"bottom"
+     }
+    }
+   }
   }
-  return coords.map(c=>convertCoords(c,projected));
+ );
+
+ const base = recordsFor(
+  getSelectedFeatures(),
+  2017
+ );
+
+ const latest = recordsFor(
+  getSelectedFeatures(),
+  2026
+ );
+
+ const built2017 = sumClass(base,6);
+ const built2026 = sumClass(latest,6);
+
+ if(builtChart){
+  builtChart.destroy();
+ }
+
+ builtChart = new Chart(
+  document.getElementById("builtChart"),
+  {
+   type:"bar",
+
+   data:{
+    labels:["2017","2026"],
+
+    datasets:[{
+     label:"Built-up area (ha)",
+     data:[built2017,built2026],
+     backgroundColor:["#8a9ba8","#c4281b"]
+    }]
+   },
+
+   options:{
+    responsive:true,
+    maintainAspectRatio:false,
+
+    plugins:{
+     legend:{
+      display:false
+     }
+    }
+   }
+  }
+ );
+
 }
 
-function normaliseFeature(raw){
-  if(!raw) return null;
 
-  // Standard GeoJSON feature
-  if(raw.type === "Feature" && raw.geometry){
-    return {
-      type:"Feature",
-      properties:raw.properties || raw.attributes || {},
-      geometry:raw.geometry
-    };
-  }
+// ==========================================================
+// MAP UPDATE
+// ==========================================================
 
-  // ArcGIS feature
-  const attrs = raw.properties || raw.attributes || {};
-  const geom = raw.geometry || raw;
+function updateMap(){
 
-  if(geom.type && geom.coordinates){
-    return {
-      type:"Feature",
-      properties:attrs,
-      geometry:geom
-    };
-  }
+ const selected = getSelectedFeatures();
 
-  if(geom.rings){
-    const wkid = geom.spatialReference?.latestWkid ||
-                 geom.spatialReference?.wkid || 4326;
-    const projected = [3857,102100,102113].includes(Number(wkid));
-    const rings = geom.rings.map(r=>r.map(c=>convertCoordinatePair(c,projected)));
+ boundaryLayer.clearLayers();
 
-    return {
-      type:"Feature",
-      properties:attrs,
-      geometry:{type:"Polygon",coordinates:rings}
-    };
-  }
+ boundaryLayer.addData({
+  type:"FeatureCollection",
+  features:selected
+ });
 
-  if(geom.paths){
-    const wkid = geom.spatialReference?.latestWkid ||
-                 geom.spatialReference?.wkid || 4326;
-    const projected = [3857,102100,102113].includes(Number(wkid));
-    return {
-      type:"Feature",
-      properties:attrs,
-      geometry:{
-        type:"MultiLineString",
-        coordinates:geom.paths.map(p=>p.map(c=>convertCoordinatePair(c,projected)))
-      }
-    };
-  }
-
-  return null;
-}
-
-function extractFeatures(data){
-  let source = [];
-
-  if(Array.isArray(data)){
-    source = data;
-  }else if(data?.type === "FeatureCollection" && Array.isArray(data.features)){
-    source = data.features;
-  }else if(Array.isArray(data?.features)){
-    source = data.features;
-  }else if(Array.isArray(data?.results)){
-    source = data.results;
-  }else if(Array.isArray(data?.data)){
-    source = data.data;
-  }else if(data?.featureSet && Array.isArray(data.featureSet.features)){
-    source = data.featureSet.features;
-  }else if(data?.geometry || data?.rings){
-    source = [data];
-  }
-
-  return source.map(normaliseFeature).filter(f=>{
-    if(!f || !f.geometry) return false;
-    return ["Polygon","MultiPolygon"].includes(f.geometry.type);
-  });
-}
-
-/* =========================================================
-   LOAD JSON BOUNDARIES
-========================================================= */
-
-async function loadBoundaries(){
-  const url = $("jsonUrl").value.trim();
-  if(!url){
-    setStatus("boundaryStatus","Enter a valid JSON URL.","bad");
-    return;
-  }
-
-  $("loadBoundaryBtn").disabled = true;
-  setStatus("boundaryStatus","Downloading administrative JSON file…","warn");
+ if(selected.length){
 
   try{
-    const response = await fetch(url,{cache:"no-store"});
-    if(!response.ok) throw new Error("HTTP "+response.status+" — "+response.statusText);
 
-    const data = await response.json();
-    const features = extractFeatures(data);
-
-    if(!features.length){
-      throw new Error("No polygon features were found. Check whether the JSON contains GeoJSON features or ArcGIS polygon rings.");
-    }
-
-    allFeatures = features;
-
-    const firstProps = propsOf(allFeatures[0]);
-    console.log("Boundary attributes:",Object.keys(firstProps));
-    console.log("Boundary feature count:",allFeatures.length);
-
-    activateSelectors();
-    updateSelection();
-
-    setStatus(
-      "boundaryStatus",
-      "Successfully loaded "+allFeatures.length.toLocaleString()+" polygon features from GitHub JSON.",
-      "good"
-    );
-
-    $("showAreaBtn").disabled = false;
-  }catch(err){
-    console.error(err);
-    setStatus("boundaryStatus","Boundary loading failed: "+err.message,"bad");
-  }finally{
-    $("loadBoundaryBtn").disabled = false;
-  }
-}
-
-$("loadBoundaryBtn").addEventListener("click",loadBoundaries);
-
-/* =========================================================
-   CASCADING ADMINISTRATIVE SELECTORS
-========================================================= */
-
-function activateSelectors(){
-  ["regionSelect","lgaSelect","districtSelect","wardSelect","eaSelect"]
-    .forEach(id=>$(id).disabled=false);
-
-  populateSelect("regionSelect",uniqueValues(allFeatures,"region"),"All regions");
-  updateCascade("region");
-}
-
-function filterByCurrent(level){
-  let list = allFeatures;
-  const order = ["region","lga","district","ward"];
-  const ids = ["regionSelect","lgaSelect","districtSelect","wardSelect"];
-
-  const stop = order.indexOf(level);
-  for(let i=0;i<=stop;i++){
-    const selected = $(ids[i]).value;
-    if(selected){
-      list = list.filter(f=>cleanString(value(f,order[i]))===selected);
-    }
-  }
-  return list;
-}
-
-function updateCascade(changed){
-  const order = ["region","lga","district","ward"];
-  const ids = ["regionSelect","lgaSelect","districtSelect","wardSelect"];
-
-  const index = order.indexOf(changed);
-
-  for(let i=index+1;i<ids.length;i++){
-    $(ids[i]).value = "";
-  }
-  $("eaSelect").value = "";
-
-  if(index < 0){
-    populateSelect("regionSelect",uniqueValues(allFeatures,"region"),"All regions");
-  }
-
-  const regionFeatures = $("regionSelect").value
-    ? allFeatures.filter(f=>cleanString(value(f,"region"))===$("regionSelect").value)
-    : allFeatures;
-
-  populateSelect("lgaSelect",uniqueValues(regionFeatures,"lga"),"All LGAs");
-
-  const lgaFeatures = $("lgaSelect").value
-    ? regionFeatures.filter(f=>cleanString(value(f,"lga"))===$("lgaSelect").value)
-    : regionFeatures;
-
-  populateSelect("districtSelect",uniqueValues(lgaFeatures,"district"),"All districts");
-
-  const districtFeatures = $("districtSelect").value
-    ? lgaFeatures.filter(f=>cleanString(value(f,"district"))===$("districtSelect").value)
-    : lgaFeatures;
-
-  populateSelect("wardSelect",uniqueValues(districtFeatures,"ward"),"All wards");
-
-  const wardFeatures = $("wardSelect").value
-    ? districtFeatures.filter(f=>cleanString(value(f,"ward"))===$("wardSelect").value)
-    : districtFeatures;
-
-  const eaValues = wardFeatures
-    .map(f=>cleanString(value(f,"ea")))
-    .filter(Boolean);
-
-  populateSelect("eaSelect",[...new Set(eaValues)].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})),"All enumeration areas");
-
-  updateSelection();
-}
-
-["regionSelect","lgaSelect","districtSelect","wardSelect"].forEach((id,i)=>{
-  $(id).addEventListener("change",()=>updateCascade(["region","lga","district","ward"][i]));
-});
-
-$("eaSelect").addEventListener("change",updateSelection);
-
-/* =========================================================
-   SELECTED AREA DISPLAY
-========================================================= */
-
-function updateSelection(){
-  if(!allFeatures.length) return;
-
-  selectedFeatures = selectedFilter();
-  updateStatistics();
-
-  const label = $("eaSelect").value ||
-                $("wardSelect").value ||
-                $("districtSelect").value ||
-                $("lgaSelect").value ||
-                $("regionSelect").value ||
-                "The Gambia";
-
-  $("mapAreaLabel").textContent = label;
-  $("selectionStatus").textContent =
-    selectedFeatures.length.toLocaleString()+" polygon feature(s) selected: "+label;
-
-  if(boundaryLayer) map.removeLayer(boundaryLayer);
-
-  boundaryLayer = L.geoJSON(
-    {type:"FeatureCollection",features:selectedFeatures},
+   map.fitBounds(
+    boundaryLayer.getBounds(),
     {
-      style:{
-        color:"#facc15",
-        weight:2,
-        opacity:1,
-        fillColor:"#facc15",
-        fillOpacity:0.04
-      },
-      onEachFeature:(feature,layer)=>{
-        const p=propsOf(feature);
-        const ea=value(feature,"ea") || "Not recorded";
-        const ward=value(feature,"ward") || "Not recorded";
-        const district=value(feature,"district") || "Not recorded";
-        layer.bindPopup(
-          "<b>Enumeration Area:</b> "+escapeHTML(ea)+
-          "<br><b>Ward:</b> "+escapeHTML(ward)+
-          "<br><b>District:</b> "+escapeHTML(district)+
-          "<br><b>Population:</b> "+escapeHTML(value(feature,"population") || "Not available")+
-          "<br><b>Households:</b> "+escapeHTML(value(feature,"households") || "Not available")
-        );
-      }
+     padding:[12,12],
+     maxZoom:13
     }
+   );
+
+  }catch(e){}
+
+ }
+
+ if(rasterLayer){
+
+  map.removeLayer(rasterLayer);
+
+  rasterLayer=null;
+
+ }
+
+ const period = document.getElementById("period").value;
+
+ if(period==="2017" || period==="2026"){
+
+  rasterLayer = L.tileLayer(
+   `./tiles/landcover_${period}/{z}/{x}/{y}.png`,
+   {
+    opacity:0.78,
+    minZoom:5,
+    maxZoom:12,
+    attribution:"Google Earth Engine | Dynamic World V1"
+   }
   ).addTo(map);
 
-  if(selectedFeatures.length){
-    const bounds=boundaryLayer.getBounds();
-    if(bounds.isValid()) map.fitBounds(bounds,{padding:[25,25],maxZoom:15});
-  }
+ }else{
 
-  refreshMask();
+  rasterLayer = L.tileLayer(
+   "./tiles/change_2017_2026/{z}/{x}/{y}.png",
+   {
+    opacity:0.82,
+    minZoom:5,
+    maxZoom:12,
+    attribution:"GBoS GEOAI | Land-cover class change"
+   }
+  ).addTo(map);
+
+ }
+
+ const year = period==="2017" ? 2017 : 2026;
+
+ const selectedRows = recordsFor(selected,year);
+
+ const totalArea = selectedRows.reduce(
+  (total,row)=>total+
+  Object.values(row.classes || {}).reduce(
+   (sum,item)=>sum+Number(item.area_ha || 0),
+   0
+  ),
+  0
+ );
+
+ document.getElementById("totalEA").textContent =
+  formatNumber(selected.length);
+
+ document.getElementById("totalArea").textContent =
+  formatNumber(totalArea);
+
+ document.getElementById("builtArea").textContent =
+  formatNumber(sumClass(selectedRows,6));
+
+ document.getElementById("cropArea").textContent =
+  formatNumber(sumClass(selectedRows,4));
+
+ updateCharts(selectedRows,period);
+
 }
 
-$("showAreaBtn").addEventListener("click",()=>{
-  updateSelection();
-  if(selectedFeatures.length && boundaryLayer){
-    map.fitBounds(boundaryLayer.getBounds(),{padding:[25,25],maxZoom:15});
-  }
-});
 
-/* =========================================================
-   MASK: SVG TRANSPARENT WINDOW
-   This covers the outside of the selected polygon(s).
-========================================================= */
+// ==========================================================
+// LEGEND
+// ==========================================================
 
-function geometryRings(feature){
-  const g=feature.geometry;
-  if(!g) return [];
+function createLegend(){
 
-  if(g.type==="Polygon") return g.coordinates || [];
-  if(g.type==="MultiPolygon") return (g.coordinates || []).flat(1);
-  return [];
+ const legend = document.getElementById("legend");
+
+ legend.innerHTML="";
+
+ CLASS_NAMES.forEach((name,index)=>{
+
+  const line = document.createElement("div");
+
+  line.innerHTML =
+   `<span class="swatch" style="background:${COLORS[index]}"></span>${name}`;
+
+  legend.appendChild(line);
+
+ });
+
 }
 
-function svgPathForRing(ring){
-  if(!ring || ring.length<3) return "";
-  const pts=ring.map(c=>{
-    const p=map.latLngToLayerPoint([c[1],c[0]]);
-    return [p.x,p.y];
-  });
-  if(!pts.length) return "";
-  return "M"+pts.map(p=>p[0].toFixed(1)+" "+p[1].toFixed(1)).join("L")+"Z";
-}
 
-function refreshMask(){
-  if(!maskLayer) return;
-  maskLayer.redraw();
-}
+// ==========================================================
+// CSV EXPORT
+// ==========================================================
+
+function exportCSV(){
+
+ const selected = getSelectedFeatures();
+
+ const rows = recordsFor(selected,2017).concat(
+  recordsFor(selected,2026)
+ );
+
+ const output = [[
+  "EA code",
+  "EA name",
+  "Ward",
+  "District",
+  "LGA",
+  "Region",
+  "Year",
+  "Class ID",
+  "Class name",
+  "Area ha"
+ ]];
+
+ rows.forEach(row=>{
+
+  Object.entries(row.classes || {}).forEach(([id,item])=>{
+
+   output.push([
+    row.ea_code,
+    row.ea_name,
+    row.ward,
+    row.district,
+    row.lga,
+    row.region,
+    row.year,
+    id,
+    item.name,
+    item.area_ha
+   ]);
 
-const SelectionMask = L.Layer.extend({
-  onAdd:function(map){
-    this._map=map;
-    this._svg=L.svg();
-    this._svg.style.position="absolute";
-    this._svg.style.pointerEvents="none";
-    this._svg.style.overflow="visible";
-    this._path=document.createElementNS("http://www.w3.org/2000/svg","path");
-    this._path.setAttribute("fill","rgba(10,20,15,0.83)");
-    this._path.setAttribute("fill-rule","evenodd");
-    this._path.setAttribute("clip-rule","evenodd");
-    this._path.setAttribute("stroke","none");
-    this._svg.appendChild(this._path);
-    map.getPanes().overlayPane.appendChild(this._svg);
-
-    map.on("moveend zoomend resize",this.redraw,this);
-    this.redraw();
-  },
-
-  onRemove:function(map){
-    map.off("moveend zoomend resize",this.redraw,this);
-    if(this._svg && this._svg.parentNode) this._svg.parentNode.removeChild(this._svg);
-  },
-
-  redraw:function(){
-    if(!this._map || !this._svg || !this._path) return;
-
-    const map=this._map;
-    const bounds=map.getPixelBounds();
-    const min=bounds.min;
-    const max=bounds.max;
-    const pad=30;
-
-    const left=min.x-pad;
-    const top=min.y-pad;
-    const width=(max.x-min.x)+pad*2;
-    const height=(max.y-min.y)+pad*2;
-
-    this._svg.style.left=left+"px";
-    this._svg.style.top=top+"px";
-    this._svg.setAttribute("width",width);
-    this._svg.setAttribute("height",height);
-    this._svg.setAttribute("viewBox",left+" "+top+" "+width+" "+height);
-
-    let d=
-      "M"+left+" "+top+
-      "L"+(left+width)+" "+top+
-      "L"+(left+width)+" "+(top+height)+
-      "L"+left+" "+(top+height)+"Z";
-
-    if($("displayMode").value==="selected" && selectedFeatures.length){
-      selectedFeatures.forEach(feature=>{
-        geometryRings(feature).forEach(ring=>{
-          d+=svgPathForRing(ring);
-        });
-      });
-    }else{
-      // In extent mode, do not mask the image.
-      d="";
-    }
-
-    this._path.setAttribute("d",d);
-  }
-});
-
-maskLayer=new SelectionMask();
-maskLayer.addTo(map);
-
-$("displayMode").addEventListener("change",()=>{
-  refreshMask();
-});
-
-/* =========================================================
-   SATELLITE IMAGE SERVER
-========================================================= */
-
-function removeImage(){
-  if(imageLayer){
-    map.removeLayer(imageLayer);
-    imageLayer=null;
-  }
-}
-
-function loadSatelliteImage(){
-  if(!window.L || !L.esri || !L.esri.imageMapLayer){
-    setStatus("imageStatus","Esri Leaflet ImageServer support did not load. Check your internet connection or browser console.","bad");
-    return;
-  }
-
-  if(!selectedFeatures.length){
-    setStatus("imageStatus","Load the boundary file and select an administrative area first.","warn");
-    return;
-  }
-
-  removeImage();
-
-  const raster=$("indexSelect").value;
-  currentIndex=raster;
-
-  $("loadImageBtn").disabled=true;
-  $("kpiIndex").textContent=shortIndexName(raster);
-  updateLegend(raster);
-
-  setStatus("imageStatus","Requesting "+raster+" from the Sentinel-2 ImageServer…","warn");
-
-  const opacity=Number($("opacitySlider").value)/100;
-
-  try{
-    imageLayer=L.esri.imageMapLayer({
-      url:SENTINEL_URL,
-      renderingRule:{rasterFunction:raster},
-      format:"png32",
-      f:"image",
-      opacity:opacity,
-      attribution:"Esri Sentinel-2 ImageServer"
-    });
-
-    imageLayer.on("loading",()=>{
-      setStatus("imageStatus","Sentinel-2 image request is being processed…","warn");
-    });
-
-    imageLayer.on("load",()=>{
-      $("loadImageBtn").disabled=false;
-      setStatus(
-        "imageStatus",
-        "Image request completed for "+raster+". If the map still appears blank, check the browser console and the ImageServer response.",
-        "good"
-      );
-      refreshMask();
-    });
-
-    imageLayer.on("error",e=>{
-      $("loadImageBtn").disabled=false;
-      console.error("Sentinel image error:",e);
-      const message=e?.message || e?.error?.message || "ImageServer request failed. See browser console.";
-      setStatus("imageStatus","Satellite image error: "+message,"bad");
-    });
-
-    imageLayer.addTo(map);
-
-    // Fit to the current selection to request a relevant image extent.
-    if(boundaryLayer && boundaryLayer.getBounds().isValid()){
-      map.fitBounds(boundaryLayer.getBounds(),{padding:[25,25],maxZoom:15});
-    }
-
-    refreshMask();
-
-    // Prevent a permanently disabled button if the service does not respond.
-    window.setTimeout(()=>{
-      if($("loadImageBtn").disabled){
-        $("loadImageBtn").disabled=false;
-        setStatus(
-          "imageStatus",
-          "The image request has not reported completion. The service may be slow, blocked or returning an error. Open F12 → Console to inspect the request.",
-          "warn"
-        );
-      }
-    },30000);
-
-  }catch(err){
-    $("loadImageBtn").disabled=false;
-    console.error(err);
-    setStatus("imageStatus","Could not create the satellite image layer: "+err.message,"bad");
-  }
-}
-
-$("loadImageBtn").addEventListener("click",loadSatelliteImage);
-$("clearImageBtn").addEventListener("click",()=>{
-  removeImage();
-  setStatus("imageStatus","Satellite imagery cleared. The basemap and selected boundaries remain visible.","warn");
-});
-
-$("opacitySlider").addEventListener("input",e=>{
-  $("opacityValue").textContent=e.target.value+"%";
-  if(imageLayer) imageLayer.setOpacity(Number(e.target.value)/100);
-});
-
-/* =========================================================
-   DYNAMIC INDEX LEGEND
-========================================================= */
-
-const legendDefinitions={
-  "NDVI Raw":{
-    title:"NDVI — Vegetation Index",
-    note:"Typical NDVI interpretation. Values range approximately from -1 to +1.",
-    classes:[
-      ["#8b4513","-1.00 to 0.00","Water, bare or non-vegetated surfaces"],
-      ["#d9c27f","0.00 to 0.15","Very low vegetation"],
-      ["#e6e600","0.15 to 0.30","Sparse vegetation"],
-      ["#9acd32","0.30 to 0.45","Moderate vegetation"],
-      ["#32a852","0.45 to 0.65","Healthy vegetation"],
-      ["#006400","0.65 to 1.00","Dense vegetation"]
-    ]
-  },
-  "NDVI Colormap":{
-    title:"NDVI — Colormap",
-    note:"The service applies its own NDVI colormap rendering.",
-    classes:[
-      ["#8b4513","Low / negative","Water, bare or non-vegetated surfaces"],
-      ["#e6e600","Low","Sparse vegetation"],
-      ["#9acd32","Moderate","Moderate vegetation"],
-      ["#32a852","High","Healthy vegetation"],
-      ["#006400","Very high","Dense vegetation"]
-    ]
-  },
-  "NDMI Colorized":{
-    title:"NDMI — Moisture Index",
-    note:"Indicative NDMI interpretation. Local conditions and image dates affect values.",
-    classes:[
-      ["#a6611a","Below -0.30","Very low moisture / dry surfaces"],
-      ["#dfc27d","-0.30 to -0.10","Low moisture"],
-      ["#f5f5dc","-0.10 to 0.10","Intermediate"],
-      ["#80cdc1","0.10 to 0.30","Moderate moisture"],
-      ["#018571","Above 0.30","Higher vegetation moisture"]
-    ]
-  },
-  "Normalized Difference Built-Up Index (NDBI)":{
-    title:"NDBI — Built-up Index",
-    note:"NDBI is a spectral indicator and may confuse built-up surfaces with bare soil.",
-    classes:[
-      ["#2166ac","Below -0.20","Lower NDBI response"],
-      ["#67a9cf","-0.20 to 0.00","Low"],
-      ["#f7f7f7","0.00 to 0.10","Intermediate"],
-      ["#ef8a62","0.10 to 0.25","Elevated built-up response"],
-      ["#b2182b","Above 0.25","Higher built-up response"]
-    ]
-  },
-  "NDWI Raw":{
-    title:"NDWI — Water Index",
-    note:"NDWI interpretation depends on the selected service function and local surface conditions.",
-    classes:[
-      ["#a6611a","Below -0.20","Generally non-water response"],
-      ["#dfc27d","-0.20 to 0.00","Low water response"],
-      ["#f7f7f7","0.00 to 0.10","Intermediate"],
-      ["#80cdc1","0.10 to 0.30","Potential water response"],
-      ["#018571","Above 0.30","Higher water response"]
-    ]
-  },
-  "NDVI - with VRE Raw":{
-    title:"NDRE — Red Edge Vegetation Index",
-    note:"Red-edge vegetation indicator. Thresholds are illustrative, not a local calibration.",
-    classes:[
-      ["#8b4513","Below 0.00","Low / negative response"],
-      ["#e6e600","0.00 to 0.15","Low"],
-      ["#9acd32","0.15 to 0.30","Moderate"],
-      ["#32a852","0.30 to 0.50","High"],
-      ["#006400","Above 0.50","Very high"]
-    ]
-  },
-  "Normalized Burn Ratio":{
-    title:"NBR — Normalized Burn Ratio",
-    note:"NBR can support burn-related analysis; change detection requires appropriate pre- and post-event imagery.",
-    classes:[
-      ["#762a83","Below -0.25","Lower NBR response"],
-      ["#af8dc3","-0.25 to 0.00","Low"],
-      ["#f7f7f7","0.00 to 0.20","Intermediate"],
-      ["#7fbf7b","0.20 to 0.45","Higher"],
-      ["#1b7837","Above 0.45","High NBR response"]
-    ]
-  }
-};
-
-const compositeDefinitions={
-  "Natural Color with DRA":{
-    title:"Sentinel-2 Natural Colour",
-    note:"Natural-colour composite. RGB appearance is controlled by the ImageServer; there are no numeric index classes."
-  },
-  "Color Infrared with DRA":{
-    title:"Sentinel-2 Colour Infrared",
-    note:"False-colour composite useful for visual vegetation interpretation. Colours are not an index classification."
-  },
-  "Agriculture with DRA":{
-    title:"Sentinel-2 Agriculture Composite",
-    note:"Agriculture-oriented false-colour composite. This is a visual rendering, not a numeric index legend."
-  },
-  "Short-wave Infrared with DRA":{
-    title:"Sentinel-2 Short-wave Infrared",
-    note:"Short-wave infrared composite for visual surface and moisture interpretation."
-  },
-  "Geology with DRA":{
-    title:"Sentinel-2 Geology Composite",
-    note:"Geology-oriented composite. Colours are determined by the service rendering."
-  }
-};
-
-function shortIndexName(name){
-  const mapNames={
-    "NDVI Raw":"NDVI",
-    "NDVI Colormap":"NDVI",
-    "NDMI Colorized":"NDMI",
-    "Normalized Difference Built-Up Index (NDBI)":"NDBI",
-    "NDWI Raw":"NDWI",
-    "NDVI - with VRE Raw":"NDRE",
-    "Normalized Burn Ratio":"NBR",
-    "Natural Color with DRA":"Natural Colour",
-    "Color Infrared with DRA":"Colour Infrared",
-    "Agriculture with DRA":"Agriculture",
-    "Short-wave Infrared with DRA":"SWIR",
-    "Geology with DRA":"Geology"
-  };
-  return mapNames[name] || name;
-}
-
-function updateLegend(name){
-  const target=$("dynamicLegend");
-  target.innerHTML="";
-
-  const definition=legendDefinitions[name];
-  const composite=compositeDefinitions[name];
-
-  if(definition){
-    $("legendTitle").textContent=definition.title;
-    $("legendNote").textContent=definition.note;
-
-    definition.classes.forEach(item=>{
-      const row=document.createElement("div");
-      row.className="legend-row";
-
-      const swatch=document.createElement("div");
-      swatch.className="swatch";
-      swatch.style.background=item[0];
-
-      const text=document.createElement("div");
-      text.innerHTML="<strong>"+escapeHTML(item[1])+"</strong><br><span style='color:#718078'>"+escapeHTML(item[2])+"</span>";
-
-      row.appendChild(swatch);
-      row.appendChild(text);
-      target.appendChild(row);
-    });
-  }else{
-    $("legendTitle").textContent=composite?.title || name;
-    $("legendNote").textContent=composite?.note ||
-      "This raster function is rendered as an image composite. No numeric class legend is defined here.";
-
-    const note=document.createElement("div");
-    note.className="legend-note";
-    note.textContent="Composite imagery uses the colour rendering provided by the Sentinel-2 ImageServer.";
-    target.appendChild(note);
-  }
-}
-
-$("indexSelect").addEventListener("change",e=>{
-  currentIndex=e.target.value;
-  $("kpiIndex").textContent=shortIndexName(currentIndex);
-  updateLegend(currentIndex);
-});
-
-/* =========================================================
-   STATISTICS
-========================================================= */
-
-function numericSum(features,key){
-  return features.reduce((sum,f)=>{
-    const n=Number(value(f,key));
-    return sum+(Number.isFinite(n)?n:0);
-  },0);
-}
-
-function hasNumeric(features,key){
-  return features.some(f=>{
-    const v=value(f,key);
-    return v!=="" && Number.isFinite(Number(v));
-  });
-}
-
-function formatNumber(n){
-  return Number(n).toLocaleString("en-US",{maximumFractionDigits:0});
-}
-
-function updateStatistics(){
-  const features=selectedFeatures;
-
-  $("kpiEA").textContent=formatNumber(features.length);
-
-  const popAvailable=hasNumeric(features,"population");
-  const hhAvailable=hasNumeric(features,"households");
-
-  $("kpiPop").textContent=popAvailable?formatNumber(numericSum(features,"population")):"—";
-  $("kpiHH").textContent=hhAvailable?formatNumber(numericSum(features,"households")):"—";
-
-  updateChart();
-}
-
-function updateChart(){
-  const pop=numericSum(selectedFeatures,"population");
-  const hh=numericSum(selectedFeatures,"households");
-  const popOK=hasNumeric(selectedFeatures,"population");
-  const hhOK=hasNumeric(selectedFeatures,"households");
-
-  const data={
-    labels:["Population","Households"],
-    datasets:[{
-      label:"Selected area totals",
-      data:[popOK?pop:0,hhOK?hh:0],
-      backgroundColor:["#166534","#60a5fa"],
-      borderRadius:5
-    }]
-  };
-
-  if(populationChart) populationChart.destroy();
-
-  populationChart=new Chart($("populationChart"),{
-    type:"bar",
-    data,
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        y:{beginAtZero:true,ticks:{font:{size:9}}},
-        x:{ticks:{font:{size:10}}}
-      }
-    }
-  });
-}
-
-/* =========================================================
-   UTILITIES
-========================================================= */
-
-function setStatus(id,message,type){
-  const el=$(id);
-  el.className="status "+(type||"");
-  el.textContent=message;
-}
-
-function escapeHTML(value){
-  return String(value).replace(/[&<>"']/g,char=>({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#039;"
-  }[char]));
-}
-
-/* =========================================================
-   RESET
-========================================================= */
-
-function resetDashboard(){
-  removeImage();
-
-  if(boundaryLayer){
-    map.removeLayer(boundaryLayer);
-    boundaryLayer=null;
-  }
-
-  allFeatures=[];
-  selectedFeatures=[];
-
-  ["regionSelect","lgaSelect","districtSelect","wardSelect","eaSelect"].forEach(id=>{
-    $(id).innerHTML="";
-    const option=document.createElement("option");
-    option.value="";
-    option.textContent="Load boundaries first";
-    $(id).appendChild(option);
-    $(id).disabled=true;
   });
 
-  $("showAreaBtn").disabled=true;
-  $("kpiEA").textContent="0";
-  $("kpiPop").textContent="—";
-  $("kpiHH").textContent="—";
-  $("kpiIndex").textContent="NDVI";
-  $("mapAreaLabel").textContent="The Gambia";
+ });
 
-  setStatus("boundaryStatus","Waiting to load the JSON boundary file.","");
-  setStatus("selectionStatus","Load boundaries to activate the selectors.","");
-  setStatus("imageStatus","Select an index and click LOAD SATELLITE IMAGE.","");
+ const csv = output.map(row=>
+  row.map(value=>
+   `"${String(value ?? "").replaceAll('"','""')}"`
+  ).join(",")
+ ).join("\n");
 
-  $("indexSelect").value="NDVI Raw";
-  $("displayMode").value="selected";
-  $("opacitySlider").value=100;
-  $("opacityValue").textContent="100%";
+ const blob = new Blob(
+  [csv],
+  {type:"text/csv"}
+ );
 
-  updateLegend("NDVI Raw");
-  updateStatistics();
-  refreshMask();
+ const url = URL.createObjectURL(blob);
 
-  map.setView([13.45,-15.45],8);
+ const a = document.createElement("a");
+
+ a.href=url;
+ a.download="GBoS_EA_Landcover_Statistics.csv";
+ a.click();
+
+ URL.revokeObjectURL(url);
+
 }
 
-$("resetBtn").addEventListener("click",resetDashboard);
 
-/* =========================================================
-   STARTUP
-========================================================= */
+// ==========================================================
+// LOAD PUBLIC DATA
+// ==========================================================
 
-updateLegend("NDVI Raw");
-updateStatistics();
-$("jsonUrl").value=DEFAULT_JSON;
+async function loadDashboard(){
 
-// Load boundary data automatically on startup.
-loadBoundaries();
+ try{
+
+  const [boundaryResponse,statsResponse] =
+   await Promise.all([
+    fetch(EA_URL),
+    fetch(STATS_URL)
+   ]);
+
+  if(!boundaryResponse.ok){
+   throw new Error("EA GeoJSON HTTP "+boundaryResponse.status);
+  }
+
+  if(!statsResponse.ok){
+   throw new Error("Statistics JSON HTTP "+statsResponse.status);
+  }
+
+  const geojson = await boundaryResponse.json();
+
+  statistics = await statsResponse.json();
+
+  boundaries = geojson.features || [];
+
+  records = statistics.ea_records || [];
+
+  updateSelectors();
+
+  createLegend();
+
+  updateMap();
+
+  document.getElementById("status").textContent =
+   `Loaded ${formatNumber(boundaries.length)} EA boundaries and ${formatNumber(records.length)} EA-year records.`;
+
+  document.getElementById("generated").textContent =
+   "Last automated update: "+(statistics.generated_utc || "not available");
+
+  document.getElementById("methodology").textContent =
+   "Source: Google Earth Engine Dynamic World V1, 10 m. " +
+   "2017 represents the calendar-year modal class. " +
+   "2026 represents observations available through the latest automated run. " +
+   "EA area statistics are calculated using pixel area. " +
+   "The change layer identifies pixels whose modal class differs between the two periods. " +
+   "These are satellite-derived estimates and have not been independently field-validated.";
+
+ }catch(error){
+
+  document.getElementById("status").textContent =
+   "Unable to load dashboard data: "+error.message;
+
+  console.error(error);
+
+ }
+
+}
+
+
+// ==========================================================
+// EVENTS
+// ==========================================================
+
+["region","lga","district","ward"].forEach(id=>{
+
+ document.getElementById(id).addEventListener(
+  "change",
+  ()=>{
+   updateSelectors();
+   updateMap();
+  }
+ );
+
+});
+
+document.getElementById("ea").addEventListener(
+ "change",
+ updateMap
+);
+
+document.getElementById("period").addEventListener(
+ "change",
+ updateMap
+);
+
+document.getElementById("apply").addEventListener(
+ "click",
+ updateMap
+);
+
+document.getElementById("reset").addEventListener(
+ "click",
+ ()=>{
+
+  ["region","lga","district","ward","ea"].forEach(id=>{
+   document.getElementById(id).value="";
+  });
+
+  updateSelectors();
+  updateMap();
+
+ }
+);
+
+document.getElementById("basemap").addEventListener(
+ "change",
+ event=>{
+
+  Object.values(basemaps).forEach(layer=>{
+   map.removeLayer(layer);
+  });
+
+  basemaps[event.target.value].addTo(map);
+
+ }
+);
+
+document.getElementById("download").addEventListener(
+ "click",
+ exportCSV
+);
+
+
+// ==========================================================
+// START
+// ==========================================================
+
+loadDashboard();
 
 </script>
+
 </body>
 </html>
