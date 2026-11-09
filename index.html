@@ -5,210 +5,335 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>GBoS GEOAI | Gambia Land-Cover Change Intelligence</title>
+<title>GBoS GEOAI | Gambia Persistent Land-Cover Change Intelligence</title>
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
 <style>
 :root{
- --navy:#10283f;
- --blue:#176b87;
- --bg:#edf2f6;
- --border:#d8e0e7;
- --muted:#647586;
+  --green:#14532d;
+  --dark:#102d25;
+  --light:#f1f5f3;
+  --border:#dce5df;
+  --muted:#64748b;
+  --white:#ffffff;
+  --accent:#16a34a;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
-body{
- margin:0;
- font-family:Arial,Helvetica,sans-serif;
- background:var(--bg);
- color:#172b3a;
+html,body{
+  margin:0;
+  padding:0;
+  height:100%;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--light);
+  color:#1e293b;
 }
 
 header{
- background:var(--navy);
- color:white;
- padding:19px 22px;
+  height:75px;
+  background:var(--dark);
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 22px;
+  gap:15px;
 }
 
-header h1{
- margin:0 0 7px;
- font-size:22px;
- letter-spacing:.4px;
+.brand{
+  font-size:19px;
+  font-weight:800;
+  letter-spacing:.4px;
 }
 
-header p{
- margin:0;
- color:#d2e1eb;
- font-size:13px;
+.subtitle{
+  font-size:11px;
+  color:#cbd5e1;
+  margin-top:5px;
 }
 
-.layout{
- display:grid;
- grid-template-columns:1fr 1fr 1fr;
- gap:12px;
- padding:12px;
- height:calc(100vh - 100px);
+.header-right{
+  font-size:11px;
+  text-align:right;
+  color:#d1fae5;
+}
+
+.dashboard{
+  height:calc(100vh - 75px);
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  padding:10px;
+  min-height:0;
 }
 
 .panel{
- min-width:0;
- background:white;
- border:1px solid var(--border);
- border-radius:9px;
- padding:14px;
- overflow:auto;
-}
-
-.panel h2{
- font-size:16px;
- color:var(--navy);
- margin:0 0 13px;
-}
-
-.panel h3{
- font-size:14px;
- margin-top:18px;
-}
-
-label{
- display:block;
- font-size:12px;
- font-weight:bold;
- margin:12px 0 5px;
-}
-
-select,button{
- width:100%;
- padding:10px;
- border:1px solid #cbd6df;
- border-radius:6px;
- background:white;
- font-size:13px;
-}
-
-button{
- background:var(--blue);
- color:white;
- border:0;
- cursor:pointer;
- margin-top:9px;
- font-weight:bold;
-}
-
-button.secondary{
- background:#566b7c;
-}
-
-button:disabled{
- opacity:.5;
- cursor:not-allowed;
+  background:white;
+  border:1px solid var(--border);
+  border-radius:9px;
+  min-width:0;
+  min-height:0;
+  overflow-y:auto;
+  padding:15px;
 }
 
 .map-panel{
- display:flex;
- flex-direction:column;
- overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  padding:0;
+  overflow:hidden;
 }
 
-.map-panel h2{
- flex:none;
+.section-title{
+  font-size:14px;
+  font-weight:800;
+  color:var(--green);
+  padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:13px;
 }
 
-.map-container{
- flex:1;
- min-height:350px;
+.group{
+  margin-bottom:14px;
+}
+
+label{
+  display:block;
+  font-size:11px;
+  font-weight:700;
+  margin-bottom:6px;
+  color:#475569;
+}
+
+select,button{
+  width:100%;
+  border:1px solid #cbd5e1;
+  border-radius:6px;
+  padding:10px;
+  font-size:12px;
+  background:white;
+  color:#1e293b;
+}
+
+button{
+  cursor:pointer;
+  font-weight:700;
+}
+
+button.primary{
+  background:var(--green);
+  border-color:var(--green);
+  color:white;
+}
+
+button.secondary{
+  background:#f8fafc;
+}
+
+button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+.button-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.layer-option{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:9px 0;
+  font-size:12px;
+}
+
+.layer-option input{
+  accent-color:var(--green);
+}
+
+.small-note{
+  font-size:10px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.map-heading{
+  height:48px;
+  padding:12px 14px;
+  font-size:13px;
+  font-weight:800;
+  color:var(--green);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
 }
 
 #map{
- width:100%;
- height:100%;
- min-height:350px;
- border-radius:7px;
+  flex:1;
+  min-height:0;
+  width:100%;
 }
 
-.kpis{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:9px;
+.map-footer{
+  padding:9px 12px;
+  border-top:1px solid var(--border);
+  font-size:10px;
+  color:var(--muted);
+  flex-shrink:0;
+}
+
+.kpi-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-bottom:16px;
 }
 
 .kpi{
- padding:12px;
- background:#f1f6f8;
- border-radius:7px;
+  border:1px solid var(--border);
+  border-radius:7px;
+  padding:12px;
+  background:#fbfdfb;
 }
 
-.kpi small{
- display:block;
- color:var(--muted);
- font-size:11px;
+.kpi-name{
+  font-size:10px;
+  color:var(--muted);
+  margin-bottom:7px;
 }
 
-.kpi strong{
- display:block;
- font-size:19px;
- margin-top:6px;
- color:var(--navy);
+.kpi-value{
+  font-size:20px;
+  font-weight:800;
+  color:var(--green);
+  overflow-wrap:anywhere;
 }
 
-.chartbox{
- position:relative;
- height:225px;
- margin:12px 0 20px;
+.kpi-unit{
+  font-size:10px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.chart-box{
+  border:1px solid var(--border);
+  border-radius:7px;
+  padding:12px;
+  margin-bottom:14px;
+}
+
+.chart-title{
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:12px;
+}
+
+.chart-area{
+  height:230px;
+  position:relative;
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  margin:7px 0;
+}
+
+.legend-color{
+  width:13px;
+  height:13px;
+  border-radius:3px;
+  flex-shrink:0;
 }
 
 .status{
- color:var(--muted);
- font-size:11px;
- line-height:1.6;
- margin-top:12px;
- overflow-wrap:anywhere;
+  background:#f0fdf4;
+  border:1px solid #bbf7d0;
+  border-radius:6px;
+  padding:10px;
+  font-size:11px;
+  color:#166534;
+  line-height:1.5;
+  margin-bottom:12px;
 }
 
-.legend{
- background:white;
- padding:9px;
- border-radius:6px;
- line-height:1.8;
- box-shadow:0 1px 5px #777;
- font-size:11px;
+.status.error{
+  background:#fef2f2;
+  border-color:#fecaca;
+  color:#991b1b;
 }
 
-.swatch{
- display:inline-block;
- width:12px;
- height:12px;
- margin-right:6px;
- vertical-align:middle;
+.status.warning{
+  background:#fffbeb;
+  border-color:#fde68a;
+  color:#92400e;
+}
+
+.metadata{
+  font-size:10px;
+  line-height:1.7;
+  color:var(--muted);
+  overflow-wrap:anywhere;
 }
 
 footer{
- padding:10px 15px;
- color:#61717f;
- font-size:11px;
- background:white;
- border-top:1px solid var(--border);
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid var(--border);
+  font-size:10px;
+  line-height:1.7;
+  color:var(--muted);
 }
 
 @media(max-width:950px){
- .layout{
-  height:auto;
-  grid-template-columns:1fr;
- }
- .panel{
-  min-height:300px;
- }
- .map-panel{
-  height:550px;
- }
+  .dashboard{
+    height:auto;
+    min-height:calc(100vh - 75px);
+    grid-template-columns:1fr;
+  }
+
+  .panel{
+    min-height:300px;
+  }
+
+  .map-panel{
+    height:550px;
+  }
+
+  #map{
+    min-height:400px;
+  }
+}
+
+@media(max-width:600px){
+  header{
+    height:auto;
+    min-height:75px;
+    padding:12px;
+  }
+
+  .brand{
+    font-size:15px;
+  }
+
+  .header-right{
+    font-size:9px;
+  }
+
+  .dashboard{
+    padding:6px;
+    gap:7px;
+  }
 }
 </style>
 </head>
@@ -216,919 +341,1244 @@ footer{
 <body>
 
 <header>
- <h1>GAMBIA PERSISTENT LAND-COVER CHANGE INTELLIGENCE</h1>
- <p>
-  GBoS GEOAI | Satellite Remote Sensing |
-  Spatial Distribution | Land-Cover Dynamics | 2017–2026
- </p>
+  <div>
+    <div class="brand">GBoS GEOAI | LAND-COVER INTELLIGENCE</div>
+    <div class="subtitle">
+      Gambia Persistent Land-Cover Change • Satellite Monitoring • Spatial Analysis
+    </div>
+  </div>
+
+  <div class="header-right">
+    GIS / CARTOGRAPHY UNIT<br>
+    GAMBIA BUREAU OF STATISTICS
+  </div>
 </header>
 
-<main class="layout">
+<main class="dashboard">
 
-<!-- ===================================================
-     CONTROLS
-==================================================== -->
+  <!-- =====================================================
+       LEFT: CONTROLS
+  ====================================================== -->
 
-<section class="panel">
+  <section class="panel">
 
- <h2>Controls</h2>
+    <div class="section-title">CONTROLS & AREA SELECTION</div>
 
- <label>Region</label>
- <select id="region">
-  <option value="">All regions</option>
- </select>
+    <div id="status" class="status">
+      Loading Gambia EA boundaries and land-cover statistics...
+    </div>
 
- <label>Local Government Area</label>
- <select id="lga">
-  <option value="">All LGAs</option>
- </select>
+    <div class="group">
+      <label for="regionSelect">Region</label>
+      <select id="regionSelect">
+        <option value="">All regions</option>
+      </select>
+    </div>
 
- <label>District</label>
- <select id="district">
-  <option value="">All districts</option>
- </select>
+    <div class="group">
+      <label for="lgaSelect">LGA</label>
+      <select id="lgaSelect">
+        <option value="">All LGAs</option>
+      </select>
+    </div>
 
- <label>Ward</label>
- <select id="ward">
-  <option value="">All wards</option>
- </select>
+    <div class="group">
+      <label for="districtSelect">District</label>
+      <select id="districtSelect">
+        <option value="">All districts</option>
+      </select>
+    </div>
 
- <label>Enumeration Area</label>
- <select id="ea">
-  <option value="">All EAs</option>
- </select>
+    <div class="group">
+      <label for="wardSelect">Ward</label>
+      <select id="wardSelect">
+        <option value="">All wards</option>
+      </select>
+    </div>
 
- <label>Analysis period</label>
- <select id="period">
-  <option value="2017">2017 baseline</option>
-  <option value="2026">2026 year-to-date</option>
-  <option value="change">2017–2026 change</option>
- </select>
+    <div class="group">
+      <label for="eaSelect">Enumeration Area</label>
+      <select id="eaSelect">
+        <option value="">All enumeration areas</option>
+      </select>
+    </div>
 
- <label>Basemap</label>
- <select id="basemap">
-  <option value="street">Street</option>
-  <option value="satellite">Satellite</option>
-  <option value="terrain">Terrain</option>
- </select>
+    <div class="button-row">
+      <button id="applyBtn" class="primary">Apply selection</button>
+      <button id="resetBtn" class="secondary">Reset</button>
+    </div>
 
- <button id="apply">Apply selection</button>
- <button class="secondary" id="reset">Reset filters</button>
- <button class="secondary" id="download">Export EA statistics CSV</button>
+    <div class="section-title" style="margin-top:22px">
+      MAP LAYERS
+    </div>
 
- <div class="status" id="status">
-  Loading boundaries and land-cover statistics...
- </div>
+    <div class="group">
+      <label for="layerSelect">Land-cover layer</label>
+      <select id="layerSelect">
+        <option value="landcover_2026">2026 land cover (YTD)</option>
+        <option value="landcover_2017">2017 land cover</option>
+        <option value="landcover_change">2017–2026 change</option>
+      </select>
+    </div>
 
-</section>
+    <div class="group">
+      <label for="baseSelect">Basemap</label>
+      <select id="baseSelect">
+        <option value="street">Street map</option>
+        <option value="satellite">Satellite</option>
+        <option value="terrain">Terrain</option>
+      </select>
+    </div>
+
+    <div class="group">
+      <label>Boundary display</label>
+
+      <div class="layer-option">
+        <input type="checkbox" id="showEA" checked>
+        <span>Enumeration Area boundaries</span>
+      </div>
+
+      <div class="layer-option">
+        <input type="checkbox" id="showRaster" checked>
+        <span>Satellite land-cover layer</span>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:22px">
+      DOWNLOAD DATA
+    </div>
+
+    <div class="group">
+      <button id="downloadCSV" class="secondary">
+        Download selected-area statistics CSV
+      </button>
+    </div>
+
+    <div class="group">
+      <button id="downloadAllCSV" class="secondary">
+        Download national statistics CSV
+      </button>
+    </div>
+
+    <div class="small-note">
+      Data are derived from satellite observations and are subject
+      to image availability, cloud conditions, classification
+      uncertainty and spatial aggregation.
+    </div>
+
+  </section>
 
 
-<!-- ===================================================
-     INTERACTIVE MAP
-==================================================== -->
+  <!-- =====================================================
+       CENTRE: MAP
+  ====================================================== -->
 
-<section class="panel map-panel">
+  <section class="panel map-panel">
 
- <h2>Interactive Map</h2>
+    <div class="map-heading">
+      INTERACTIVE LAND-COVER MAP
+    </div>
 
- <div class="map-container">
-  <div id="map"></div>
- </div>
+    <div id="map"></div>
 
-</section>
+    <div class="map-footer">
+      Map source: Dynamic World / Sentinel-2 derived land-cover
+      classification. EA boundaries: GBoS Census EA GeoJSON.
+    </div>
+
+  </section>
 
 
-<!-- ===================================================
-     ANALYTICS
-==================================================== -->
+  <!-- =====================================================
+       RIGHT: ANALYTICS
+  ====================================================== -->
 
-<section class="panel">
+  <section class="panel">
 
- <h2>Analytics</h2>
+    <div class="section-title">LAND-COVER ANALYTICS</div>
 
- <div class="kpis">
+    <div class="kpi-grid">
 
-  <div class="kpi">
-   <small>Selected enumeration areas</small>
-   <strong id="totalEA">—</strong>
-  </div>
+      <div class="kpi">
+        <div class="kpi-name">Selected EAs</div>
+        <div class="kpi-value" id="kpiEAs">—</div>
+        <div class="kpi-unit">Enumeration areas</div>
+      </div>
 
-  <div class="kpi">
-   <small>Total mapped area (ha)</small>
-   <strong id="totalArea">—</strong>
-  </div>
+      <div class="kpi">
+        <div class="kpi-name">Mapped area</div>
+        <div class="kpi-value" id="kpiArea">—</div>
+        <div class="kpi-unit">Hectares, observed classes</div>
+      </div>
 
-  <div class="kpi">
-   <small>Built-up area (ha)</small>
-   <strong id="builtArea">—</strong>
-  </div>
+      <div class="kpi">
+        <div class="kpi-name">Built-up 2017</div>
+        <div class="kpi-value" id="kpiBuilt2017">—</div>
+        <div class="kpi-unit">Hectares</div>
+      </div>
 
-  <div class="kpi">
-   <small>Crop area (ha)</small>
-   <strong id="cropArea">—</strong>
-  </div>
+      <div class="kpi">
+        <div class="kpi-name">Built-up 2026</div>
+        <div class="kpi-value" id="kpiBuilt2026">—</div>
+        <div class="kpi-unit">Hectares</div>
+      </div>
 
- </div>
+      <div class="kpi">
+        <div class="kpi-name">Built-up change</div>
+        <div class="kpi-value" id="kpiBuiltChange">—</div>
+        <div class="kpi-unit">Hectares</div>
+      </div>
 
- <h3>Land-cover composition</h3>
+      <div class="kpi">
+        <div class="kpi-name">Built-up change</div>
+        <div class="kpi-value" id="kpiBuiltPercent">—</div>
+        <div class="kpi-unit">Percentage change from 2017</div>
+      </div>
 
- <div class="chartbox">
-  <canvas id="classChart"></canvas>
- </div>
+    </div>
 
- <h3>Built-up area comparison</h3>
+    <div class="chart-box">
+      <div class="chart-title">
+        Land-cover distribution — selected area
+      </div>
+      <div class="chart-area">
+        <canvas id="distributionChart"></canvas>
+      </div>
+    </div>
 
- <div class="chartbox">
-  <canvas id="builtChart"></canvas>
- </div>
+    <div class="chart-box">
+      <div class="chart-title">
+        2017 versus 2026 class-area comparison
+      </div>
+      <div class="chart-area">
+        <canvas id="comparisonChart"></canvas>
+      </div>
+    </div>
 
- <h3>Land-cover classification</h3>
+    <div class="chart-box">
+      <div class="chart-title">
+        Land-cover classification legend
+      </div>
+      <div id="legend"></div>
+    </div>
 
- <div id="legend"></div>
+    <div class="section-title">
+      METHODOLOGY & METADATA
+    </div>
 
- <h3>Methodology</h3>
+    <div id="metadata" class="metadata">
+      Waiting for processing metadata...
+    </div>
 
- <div class="status" id="methodology">
-  Satellite observations are processed using Google Earth Engine
-  and Dynamic World V1. The annual modal land-cover class is
-  calculated from available observations.
- </div>
+    <footer>
+      <strong>Produced by Ansu Singhateh</strong><br>
+      GIS Analyst | GIS / Cartography Unit | Gambia Bureau of Statistics<br>
+      GBoS GEOAI • Research and educational use
+    </footer>
 
- <div class="status" id="generated"></div>
-
-</section>
+  </section>
 
 </main>
 
-<footer>
- Produced by Ansu Singhateh |
- GIS Analyst | GIS / Cartography Unit |
- Gambia Bureau of Statistics |
- GBoS GEOAI • Research and educational use
-</footer>
-
 
 <script>
+"use strict";
 
-// ==========================================================
-// PUBLIC DATA SOURCES
-// ==========================================================
+/* ==========================================================
+   CONFIGURATION
+========================================================== */
 
-const EA_URL =
-"https://raw.githubusercontent.com/silkysingz94-oss/Land-Cover-Change/main/Census_EAs_Geo.json";
-
+const EA_GEOJSON_URL = "./Census_EAs_Geo.json";
 const STATS_URL = "./data/stats.json";
 
+const CLASS_IDS = [0,1,2,3,4,5,6,7,8];
+
 const CLASS_NAMES = [
- "Water",
- "Trees",
- "Grass",
- "Flooded vegetation",
- "Crops",
- "Shrub and scrub",
- "Built area",
- "Bare ground",
- "Snow and ice"
+  "Water",
+  "Trees",
+  "Grass",
+  "Flooded vegetation",
+  "Crops",
+  "Shrub and scrub",
+  "Built area",
+  "Bare ground",
+  "Snow and ice"
 ];
 
-const COLORS = [
- "#419BDF",
- "#397D49",
- "#88B053",
- "#7A87C6",
- "#E49635",
- "#DFC35A",
- "#C4281B",
- "#A59B8F",
- "#B39FE1"
+const CLASS_COLORS = [
+  "#419BDF",
+  "#397D49",
+  "#88B053",
+  "#7A87C6",
+  "#E49635",
+  "#DFC35A",
+  "#C4281B",
+  "#A59B8F",
+  "#B39FE1"
+];
+
+const CLASS_FIELDS = [
+  "water_ha",
+  "trees_ha",
+  "grass_ha",
+  "flooded_vegetation_ha",
+  "crops_ha",
+  "shrub_and_scrub_ha",
+  "built_area_ha",
+  "bare_ground_ha",
+  "snow_and_ice_ha"
 ];
 
 
-// ==========================================================
-// APPLICATION STATE
-// ==========================================================
+/* ==========================================================
+   GLOBAL STATE
+========================================================== */
 
-let boundaries = [];
-let records = [];
-let statistics = null;
+let eaGeoJSON = null;
+let stats = null;
+let allFeatures = [];
+let selectedFeatures = [];
 
-let boundaryLayer = null;
+let distributionChart = null;
+let comparisonChart = null;
+
 let rasterLayer = null;
+let boundaryLayer = null;
+let activeBaseLayer = null;
 
-let classChart = null;
-let builtChart = null;
 
-
-// ==========================================================
-// MAP
-// ==========================================================
+/* ==========================================================
+   MAP INITIALISATION
+========================================================== */
 
 const map = L.map("map", {
- preferCanvas:true
-}).setView([13.45,-16.5],8);
+  zoomControl: true,
+  preferCanvas: true
+}).setView([13.45, -15.55], 8);
 
 const basemaps = {
 
- street:L.tileLayer(
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
-   maxZoom:19,
-   attribution:"© OpenStreetMap"
-  }
- ),
+  street: L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap"
+    }
+  ),
 
- satellite:L.tileLayer(
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-  {
-   maxZoom:19,
-   attribution:"© Esri"
-  }
- ),
+  satellite: L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      maxZoom: 19,
+      attribution: "Esri World Imagery"
+    }
+  ),
 
- terrain:L.tileLayer(
-  "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-  {
-   maxZoom:17,
-   attribution:"© OpenTopoMap"
-  }
- )
-
+  terrain: L.tileLayer(
+    "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    {
+      maxZoom: 17,
+      attribution: "OpenTopoMap"
+    }
+  )
 };
 
-basemaps.street.addTo(map);
-
-boundaryLayer = L.geoJSON(null,{
- style:{
-  color:"#ffffff",
-  weight:1,
-  fillColor:"#ffffff",
-  fillOpacity:0.02
- },
- onEachFeature:function(feature,layer){
-  layer.bindPopup(getPopup(feature.properties || {}));
- }
-}).addTo(map);
+activeBaseLayer = basemaps.street;
+activeBaseLayer.addTo(map);
 
 
-// ==========================================================
-// PROPERTY FIELD HANDLING
-// ==========================================================
+/* ==========================================================
+   HELPERS
+========================================================== */
 
-const FIELD_NAMES = {
+function normalise(value){
+  return String(value ?? "").trim();
+}
 
- region:[
-  "RCO","rco","region","regionname","RCO_NAME"
- ],
+function getProperty(properties, names){
 
- lga:[
-  "lganame","LGA","lga","lg_name"
- ],
+  for(const name of names){
 
- district:[
-  "distname","district","districtname"
- ],
-
- ward:[
-  "wardname","ward","ward_name"
- ],
-
- ea:[
-  "feacode","FEACODE","FEA_Code","EA_code",
-  "eaname","ea_code"
- ]
-
-};
-
-
-function getValue(properties,fields){
-
- for(const field of fields){
-
-  if(
-   properties[field] !== undefined &&
-   properties[field] !== null &&
-   String(properties[field]).trim() !== ""
-  ){
-
-   return String(properties[field]);
-
+    if(properties[name] !== undefined &&
+       properties[name] !== null &&
+       properties[name] !== ""){
+      return normalise(properties[name]);
+    }
   }
 
- }
+  const keys = Object.keys(properties || {});
 
- return "";
+  for(const name of names){
 
+    const found = keys.find(
+      key => key.toLowerCase() === name.toLowerCase()
+    );
+
+    if(found && properties[found] !== null){
+      return normalise(properties[found]);
+    }
+  }
+
+  return "";
+}
+
+function getEAKey(feature){
+
+  return getProperty(feature.properties, [
+    "feacode",
+    "FEACODE",
+    "FEA_Code",
+    "EA_code",
+    "ea_code",
+    "EA"
+  ]);
+}
+
+function getRegion(feature){
+
+  return getProperty(feature.properties, [
+    "RCO",
+    "rco",
+    "region",
+    "region_name"
+  ]);
+}
+
+function getLGA(feature){
+
+  return getProperty(feature.properties, [
+    "lganame",
+    "LGA",
+    "lga",
+    "lga_name"
+  ]);
+}
+
+function getDistrict(feature){
+
+  return getProperty(feature.properties, [
+    "distname",
+    "district",
+    "district_name"
+  ]);
+}
+
+function getWard(feature){
+
+  return getProperty(feature.properties, [
+    "wardname",
+    "ward",
+    "ward_name"
+  ]);
+}
+
+function getEAName(feature){
+
+  return getProperty(feature.properties, [
+    "eaname",
+    "EA_Name",
+    "ea_name",
+    "FEA_Code"
+  ]);
+}
+
+function formatNumber(value, decimals=1){
+
+  const number = Number(value || 0);
+
+  return number.toLocaleString(
+    "en-US",
+    {
+      minimumFractionDigits:decimals,
+      maximumFractionDigits:decimals
+    }
+  );
+}
+
+function setStatus(message, type="success"){
+
+  const el = document.getElementById("status");
+
+  el.textContent = message;
+  el.className = "status";
+
+  if(type === "error"){
+    el.classList.add("error");
+  }
+
+  if(type === "warning"){
+    el.classList.add("warning");
+  }
+}
+
+function uniqueValues(features, getter){
+
+  return [...new Set(
+    features.map(getter).filter(Boolean)
+  )].sort((a,b)=>a.localeCompare(b));
+}
+
+function fillSelect(id, values, firstLabel){
+
+  const select = document.getElementById(id);
+  const previous = select.value;
+
+  select.innerHTML = "";
+
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = firstLabel;
+  select.appendChild(first);
+
+  values.forEach(value=>{
+
+    const option = document.createElement("option");
+
+    option.value = value;
+    option.textContent = value;
+
+    select.appendChild(option);
+  });
+
+  if(values.includes(previous)){
+    select.value = previous;
+  }
 }
 
 
-function getField(feature,key){
+/* ==========================================================
+   HIERARCHICAL AREA SELECTORS
+========================================================== */
 
- return getValue(
-  feature.properties || {},
-  FIELD_NAMES[key]
- );
+function getFilteredForRegion(){
 
+  const region = document.getElementById("regionSelect").value;
+
+  return allFeatures.filter(feature =>
+    !region || getRegion(feature) === region
+  );
+}
+
+function getFilteredForLGA(){
+
+  const lga = document.getElementById("lgaSelect").value;
+
+  return getFilteredForRegion().filter(feature =>
+    !lga || getLGA(feature) === lga
+  );
+}
+
+function getFilteredForDistrict(){
+
+  const district = document.getElementById("districtSelect").value;
+
+  return getFilteredForLGA().filter(feature =>
+    !district || getDistrict(feature) === district
+  );
+}
+
+function getFilteredForWard(){
+
+  const ward = document.getElementById("wardSelect").value;
+
+  return getFilteredForDistrict().filter(feature =>
+    !ward || getWard(feature) === ward
+  );
+}
+
+function updateSelectors(changed){
+
+  if(changed === "region"){
+
+    fillSelect(
+      "lgaSelect",
+      uniqueValues(getFilteredForRegion(),getLGA),
+      "All LGAs"
+    );
+
+    document.getElementById("districtSelect").value = "";
+    document.getElementById("wardSelect").value = "";
+    document.getElementById("eaSelect").value = "";
+  }
+
+  if(changed === "lga"){
+
+    fillSelect(
+      "districtSelect",
+      uniqueValues(getFilteredForLGA(),getDistrict),
+      "All districts"
+    );
+
+    document.getElementById("wardSelect").value = "";
+    document.getElementById("eaSelect").value = "";
+  }
+
+  if(changed === "district"){
+
+    fillSelect(
+      "wardSelect",
+      uniqueValues(getFilteredForDistrict(),getWard),
+      "All wards"
+    );
+
+    document.getElementById("eaSelect").value = "";
+  }
+
+  if(changed === "ward"){
+
+    fillSelect(
+      "eaSelect",
+      getFilteredForWard()
+        .map(getEAKey)
+        .filter(Boolean)
+        .sort(),
+      "All enumeration areas"
+    );
+  }
 }
 
 
-function unique(values){
+/* ==========================================================
+   STATISTICS
+========================================================== */
 
- return [...new Set(
-  values.filter(Boolean)
- )].sort((a,b)=>a.localeCompare(b));
+function getRecord(feature, year){
 
+  const key = getEAKey(feature);
+
+  return stats?.years?.[year]?.features?.[key] || null;
 }
 
+function sumAreas(features, year){
 
-function getPopup(p){
+  const totals = {};
 
- return `
- <b>${getValue(p,["eaname","feacode","FEACODE"]) || "Enumeration Area"}</b>
- <br>Region: ${getValue(p,["RCO","RCO_NAME"])}
- <br>LGA: ${getValue(p,["lganame"])}
- <br>District: ${getValue(p,["distname"])}
- <br>Ward: ${getValue(p,["wardname"])}
- `;
+  CLASS_FIELDS.forEach(field => totals[field] = 0);
 
+  features.forEach(feature=>{
+
+    const record = getRecord(feature,year);
+
+    if(!record) return;
+
+    CLASS_FIELDS.forEach(field=>{
+
+      totals[field] += Number(
+        record.areas?.[field] || 0
+      );
+    });
+  });
+
+  return totals;
 }
-
-
-// ==========================================================
-// SELECTORS
-// ==========================================================
-
-function populateSelect(id,values,label){
-
- const select = document.getElementById(id);
-
- const previous = select.value;
-
- select.innerHTML = "";
-
- const first = document.createElement("option");
-
- first.value = "";
- first.textContent = label;
-
- select.appendChild(first);
-
- values.forEach(value=>{
-
-  const option = document.createElement("option");
-
-  option.value = value;
-  option.textContent = value;
-
-  select.appendChild(option);
-
- });
-
- if(values.includes(previous)){
-  select.value = previous;
- }
-
-}
-
-
-function getFilters(){
-
- return {
-
-  region:document.getElementById("region").value,
-  lga:document.getElementById("lga").value,
-  district:document.getElementById("district").value,
-  ward:document.getElementById("ward").value,
-  ea:document.getElementById("ea").value
-
- };
-
-}
-
-
-function updateSelectors(){
-
- const f = getFilters();
-
- let current = boundaries;
-
- populateSelect(
-  "region",
-  unique(current.map(x=>getField(x,"region"))),
-  "All regions"
- );
-
- current = current.filter(
-  x=>!f.region || getField(x,"region")===f.region
- );
-
- populateSelect(
-  "lga",
-  unique(current.map(x=>getField(x,"lga"))),
-  "All LGAs"
- );
-
- current = current.filter(
-  x=>!f.lga || getField(x,"lga")===f.lga
- );
-
- populateSelect(
-  "district",
-  unique(current.map(x=>getField(x,"district"))),
-  "All districts"
- );
-
- current = current.filter(
-  x=>!f.district || getField(x,"district")===f.district
- );
-
- populateSelect(
-  "ward",
-  unique(current.map(x=>getField(x,"ward"))),
-  "All wards"
- );
-
- current = current.filter(
-  x=>!f.ward || getField(x,"ward")===f.ward
- );
-
- populateSelect(
-  "ea",
-  unique(current.map(x=>getField(x,"ea"))),
-  "All EAs"
- );
-
-}
-
 
 function getSelectedFeatures(){
 
- const f = getFilters();
+  const region = document.getElementById("regionSelect").value;
+  const lga = document.getElementById("lgaSelect").value;
+  const district = document.getElementById("districtSelect").value;
+  const ward = document.getElementById("wardSelect").value;
+  const ea = document.getElementById("eaSelect").value;
 
- return boundaries.filter(feature=>{
+  return allFeatures.filter(feature => {
 
-  return Object.entries(f).every(([key,value])=>{
+    if(region && getRegion(feature) !== region) return false;
+    if(lga && getLGA(feature) !== lga) return false;
+    if(district && getDistrict(feature) !== district) return false;
+    if(ward && getWard(feature) !== ward) return false;
+    if(ea && getEAKey(feature) !== ea) return false;
 
-   return !value || getField(feature,key)===value;
-
+    return true;
   });
+}
 
- });
+function renderKPIs(features){
 
+  const oldAreas = sumAreas(features,"2017");
+  const newAreas = sumAreas(features,"2026");
+
+  const oldTotal = Object.values(oldAreas).reduce((a,b)=>a+b,0);
+  const newTotal = Object.values(newAreas).reduce((a,b)=>a+b,0);
+
+  const oldBuilt = oldAreas.built_area_ha;
+  const newBuilt = newAreas.built_area_ha;
+
+  const difference = newBuilt - oldBuilt;
+
+  const percent = oldBuilt > 0
+    ? (difference / oldBuilt) * 100
+    : null;
+
+  document.getElementById("kpiEAs").textContent =
+    formatNumber(features.length,0);
+
+  document.getElementById("kpiArea").textContent =
+    formatNumber(newTotal,1);
+
+  document.getElementById("kpiBuilt2017").textContent =
+    formatNumber(oldBuilt,1);
+
+  document.getElementById("kpiBuilt2026").textContent =
+    formatNumber(newBuilt,1);
+
+  document.getElementById("kpiBuiltChange").textContent =
+    (difference > 0 ? "+" : "") + formatNumber(difference,1);
+
+  document.getElementById("kpiBuiltPercent").textContent =
+    percent === null ? "—" :
+    (percent > 0 ? "+" : "") + formatNumber(percent,1) + "%";
 }
 
 
-// ==========================================================
-// STATISTICS
-// ==========================================================
+/* ==========================================================
+   CHARTS
+========================================================== */
 
-function recordsFor(features,year){
+function renderCharts(features){
 
- const codes = new Set(
-  features.map(x=>getField(x,"ea"))
- );
+  const oldAreas = sumAreas(features,"2017");
+  const newAreas = sumAreas(features,"2026");
 
- return records.filter(r=>
-  codes.has(String(r.ea_code)) &&
-  Number(r.year)===Number(year)
- );
+  const labels = CLASS_NAMES;
 
-}
+  const distributionValues = CLASS_FIELDS.map(
+    field => newAreas[field]
+  );
 
+  const oldValues = CLASS_FIELDS.map(
+    field => oldAreas[field]
+  );
 
-function sumClass(rows,classId){
+  const newValues = CLASS_FIELDS.map(
+    field => newAreas[field]
+  );
 
- return rows.reduce((total,row)=>{
-
-  const item = (row.classes || {})[String(classId)];
-
-  return total + Number(item?.area_ha || 0);
-
- },0);
-
-}
-
-
-function formatNumber(value){
-
- return Number(value || 0).toLocaleString(
-  undefined,
-  {maximumFractionDigits:1}
- );
-
-}
-
-
-// ==========================================================
-// CHARTS
-// ==========================================================
-
-function updateCharts(selected,period){
-
- const chartYear = period==="2017" ? 2017 : 2026;
-
- const values = CLASS_NAMES.map(
-  (_,index)=>sumClass(selected,index)
- );
-
- if(classChart){
-  classChart.destroy();
- }
-
- classChart = new Chart(
-  document.getElementById("classChart"),
-  {
-   type:"doughnut",
-
-   data:{
-    labels:CLASS_NAMES,
-
-    datasets:[{
-     data:values,
-     backgroundColor:COLORS
-    }]
-   },
-
-   options:{
-    responsive:true,
-    maintainAspectRatio:false,
-
-    plugins:{
-     legend:{
-      position:"bottom"
-     }
-    }
-   }
+  if(distributionChart){
+    distributionChart.destroy();
   }
- );
 
- const base = recordsFor(
-  getSelectedFeatures(),
-  2017
- );
-
- const latest = recordsFor(
-  getSelectedFeatures(),
-  2026
- );
-
- const built2017 = sumClass(base,6);
- const built2026 = sumClass(latest,6);
-
- if(builtChart){
-  builtChart.destroy();
- }
-
- builtChart = new Chart(
-  document.getElementById("builtChart"),
-  {
-   type:"bar",
-
-   data:{
-    labels:["2017","2026"],
-
-    datasets:[{
-     label:"Built-up area (ha)",
-     data:[built2017,built2026],
-     backgroundColor:["#8a9ba8","#c4281b"]
-    }]
-   },
-
-   options:{
-    responsive:true,
-    maintainAspectRatio:false,
-
-    plugins:{
-     legend:{
-      display:false
-     }
-    }
-   }
-  }
- );
-
-}
-
-
-// ==========================================================
-// MAP UPDATE
-// ==========================================================
-
-function updateMap(){
-
- const selected = getSelectedFeatures();
-
- boundaryLayer.clearLayers();
-
- boundaryLayer.addData({
-  type:"FeatureCollection",
-  features:selected
- });
-
- if(selected.length){
-
-  try{
-
-   map.fitBounds(
-    boundaryLayer.getBounds(),
+  distributionChart = new Chart(
+    document.getElementById("distributionChart"),
     {
-     padding:[12,12],
-     maxZoom:13
+      type:"doughnut",
+
+      data:{
+        labels,
+        datasets:[{
+          data:distributionValues,
+          backgroundColor:CLASS_COLORS,
+          borderWidth:1
+        }]
+      },
+
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+
+        plugins:{
+          legend:{
+            position:"bottom",
+            labels:{
+              boxWidth:10,
+              font:{size:9}
+            }
+          },
+
+          tooltip:{
+            callbacks:{
+              label:function(context){
+                return context.label + ": " +
+                  formatNumber(context.raw,2) + " ha";
+              }
+            }
+          }
+        }
+      }
     }
-   );
+  );
 
-  }catch(e){}
+  if(comparisonChart){
+    comparisonChart.destroy();
+  }
 
- }
+  comparisonChart = new Chart(
+    document.getElementById("comparisonChart"),
+    {
+      type:"bar",
 
- if(rasterLayer){
+      data:{
+        labels,
 
-  map.removeLayer(rasterLayer);
+        datasets:[
+          {
+            label:"2017",
+            data:oldValues,
+            backgroundColor:"#64748b"
+          },
+          {
+            label:"2026 YTD",
+            data:newValues,
+            backgroundColor:"#16a34a"
+          }
+        ]
+      },
 
-  rasterLayer=null;
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
 
- }
+        scales:{
+          x:{
+            ticks:{
+              font:{size:8},
+              maxRotation:50,
+              minRotation:30
+            }
+          },
 
- const period = document.getElementById("period").value;
+          y:{
+            beginAtZero:true,
+            title:{
+              display:true,
+              text:"Area (ha)"
+            }
+          }
+        },
 
- if(period==="2017" || period==="2026"){
-
-  rasterLayer = L.tileLayer(
-   `./tiles/landcover_${period}/{z}/{x}/{y}.png`,
-   {
-    opacity:0.78,
-    minZoom:5,
-    maxZoom:12,
-    attribution:"Google Earth Engine | Dynamic World V1"
-   }
-  ).addTo(map);
-
- }else{
-
-  rasterLayer = L.tileLayer(
-   "./tiles/change_2017_2026/{z}/{x}/{y}.png",
-   {
-    opacity:0.82,
-    minZoom:5,
-    maxZoom:12,
-    attribution:"GBoS GEOAI | Land-cover class change"
-   }
-  ).addTo(map);
-
- }
-
- const year = period==="2017" ? 2017 : 2026;
-
- const selectedRows = recordsFor(selected,year);
-
- const totalArea = selectedRows.reduce(
-  (total,row)=>total+
-  Object.values(row.classes || {}).reduce(
-   (sum,item)=>sum+Number(item.area_ha || 0),
-   0
-  ),
-  0
- );
-
- document.getElementById("totalEA").textContent =
-  formatNumber(selected.length);
-
- document.getElementById("totalArea").textContent =
-  formatNumber(totalArea);
-
- document.getElementById("builtArea").textContent =
-  formatNumber(sumClass(selectedRows,6));
-
- document.getElementById("cropArea").textContent =
-  formatNumber(sumClass(selectedRows,4));
-
- updateCharts(selectedRows,period);
-
+        plugins:{
+          legend:{
+            position:"bottom"
+          }
+        }
+      }
+    }
+  );
 }
 
 
-// ==========================================================
-// LEGEND
-// ==========================================================
+/* ==========================================================
+   LEGEND
+========================================================== */
 
-function createLegend(){
+function renderLegend(){
 
- const legend = document.getElementById("legend");
+  const container = document.getElementById("legend");
 
- legend.innerHTML="";
+  container.innerHTML = "";
 
- CLASS_NAMES.forEach((name,index)=>{
+  CLASS_NAMES.forEach((name,index)=>{
 
-  const line = document.createElement("div");
+    const item = document.createElement("div");
+    item.className = "legend-item";
 
-  line.innerHTML =
-   `<span class="swatch" style="background:${COLORS[index]}"></span>${name}`;
+    const swatch = document.createElement("span");
+    swatch.className = "legend-color";
+    swatch.style.background = CLASS_COLORS[index];
 
-  legend.appendChild(line);
+    const label = document.createElement("span");
+    label.textContent = name;
 
- });
+    item.appendChild(swatch);
+    item.appendChild(label);
 
-}
-
-
-// ==========================================================
-// CSV EXPORT
-// ==========================================================
-
-function exportCSV(){
-
- const selected = getSelectedFeatures();
-
- const rows = recordsFor(selected,2017).concat(
-  recordsFor(selected,2026)
- );
-
- const output = [[
-  "EA code",
-  "EA name",
-  "Ward",
-  "District",
-  "LGA",
-  "Region",
-  "Year",
-  "Class ID",
-  "Class name",
-  "Area ha"
- ]];
-
- rows.forEach(row=>{
-
-  Object.entries(row.classes || {}).forEach(([id,item])=>{
-
-   output.push([
-    row.ea_code,
-    row.ea_name,
-    row.ward,
-    row.district,
-    row.lga,
-    row.region,
-    row.year,
-    id,
-    item.name,
-    item.area_ha
-   ]);
-
+    container.appendChild(item);
   });
 
- });
+  const changeNote = document.createElement("div");
+  changeNote.className = "small-note";
+  changeNote.style.marginTop = "12px";
+  changeNote.textContent =
+    "Change layer: red indicates a different classified class; green indicates the same class in both periods.";
 
- const csv = output.map(row=>
-  row.map(value=>
-   `"${String(value ?? "").replaceAll('"','""')}"`
-  ).join(",")
- ).join("\n");
-
- const blob = new Blob(
-  [csv],
-  {type:"text/csv"}
- );
-
- const url = URL.createObjectURL(blob);
-
- const a = document.createElement("a");
-
- a.href=url;
- a.download="GBoS_EA_Landcover_Statistics.csv";
- a.click();
-
- URL.revokeObjectURL(url);
-
+  container.appendChild(changeNote);
 }
 
 
-// ==========================================================
-// LOAD PUBLIC DATA
-// ==========================================================
+/* ==========================================================
+   MAP LAYERS
+========================================================== */
+
+function updateRasterLayer(){
+
+  if(rasterLayer){
+    map.removeLayer(rasterLayer);
+    rasterLayer = null;
+  }
+
+  if(!document.getElementById("showRaster").checked){
+    return;
+  }
+
+  const layerName = document.getElementById("layerSelect").value;
+
+  rasterLayer = L.tileLayer(
+    `./tiles/${layerName}/{z}/{x}/{y}.png`,
+    {
+      minZoom:5,
+      maxZoom:11,
+      maxNativeZoom:11,
+      opacity:0.78,
+      attribution:"GBoS GEOAI | Dynamic World"
+    }
+  );
+
+  rasterLayer.addTo(map);
+}
+
+function updateBoundaryLayer(features){
+
+  if(boundaryLayer){
+    map.removeLayer(boundaryLayer);
+    boundaryLayer = null;
+  }
+
+  if(!document.getElementById("showEA").checked){
+    return;
+  }
+
+  boundaryLayer = L.geoJSON(
+    {
+      type:"FeatureCollection",
+      features
+    },
+    {
+      style:{
+        color:"#123c32",
+        weight:1,
+        fillOpacity:0
+      },
+
+      onEachFeature:function(feature,layer){
+
+        const key = getEAKey(feature);
+
+        layer.bindPopup(
+          "<strong>Enumeration Area</strong><br>" +
+          "EA code: " + key + "<br>" +
+          "EA name: " + getEAName(feature) + "<br>" +
+          "Ward: " + getWard(feature) + "<br>" +
+          "District: " + getDistrict(feature) + "<br>" +
+          "LGA: " + getLGA(feature)
+        );
+      }
+    }
+  );
+
+  boundaryLayer.addTo(map);
+}
+
+function zoomToFeatures(features){
+
+  if(!features.length){
+    map.setView([13.45,-15.55],8);
+    return;
+  }
+
+  const layer = L.geoJSON({
+    type:"FeatureCollection",
+    features
+  });
+
+  const bounds = layer.getBounds();
+
+  if(bounds.isValid()){
+    map.fitBounds(bounds,{
+      padding:[20,20],
+      maxZoom:13
+    });
+  }
+}
+
+
+/* ==========================================================
+   ANALYTICS UPDATE
+========================================================== */
+
+function updateAnalytics(){
+
+  selectedFeatures = getSelectedFeatures();
+
+  renderKPIs(selectedFeatures);
+  renderCharts(selectedFeatures);
+  updateBoundaryLayer(selectedFeatures);
+  zoomToFeatures(selectedFeatures);
+
+  setStatus(
+    selectedFeatures.length +
+    " enumeration areas selected. Statistics reflect the selected areas."
+  );
+}
+
+
+/* ==========================================================
+   CSV EXPORT
+========================================================== */
+
+function downloadCSV(rows, filename){
+
+  if(!rows.length){
+    setStatus("No records are available to export.", "warning");
+    return;
+  }
+
+  const headers = Object.keys(rows[0]);
+
+  const escapeCSV = value => {
+
+    const string = String(value ?? "");
+
+    return '"' + string.replace(/"/g,'""') + '"';
+  };
+
+  const csv = [
+    headers.map(escapeCSV).join(","),
+    ...rows.map(row =>
+      headers.map(header => escapeCSV(row[header])).join(",")
+    )
+  ].join("\n");
+
+  const blob = new Blob(
+    [csv],
+    {type:"text/csv;charset=utf-8;"}
+  );
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  link.click();
+
+  URL.revokeObjectURL(url);
+}
+
+function exportSelectedCSV(){
+
+  const rows = [];
+
+  selectedFeatures.forEach(feature=>{
+
+    const oldRecord = getRecord(feature,"2017");
+    const newRecord = getRecord(feature,"2026");
+
+    if(!oldRecord || !newRecord) return;
+
+    const row = {
+      feacode:getEAKey(feature),
+      eaname:getEAName(feature),
+      RCO:getRegion(feature),
+      lganame:getLGA(feature),
+      distname:getDistrict(feature),
+      wardname:getWard(feature)
+    };
+
+    CLASS_FIELDS.forEach(field=>{
+
+      const label = field.replace("_ha","");
+
+      row[label + "_2017_ha"] =
+        oldRecord.areas[field] || 0;
+
+      row[label + "_2026_ha"] =
+        newRecord.areas[field] || 0;
+
+      row[label + "_change_ha"] =
+        (newRecord.areas[field] || 0) -
+        (oldRecord.areas[field] || 0);
+    });
+
+    rows.push(row);
+  });
+
+  downloadCSV(rows,"GBoS_Selected_Area_Landcover.csv");
+}
+
+function exportNationalCSV(){
+
+  const url = "./data/change_statistics.csv";
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "GBoS_National_Landcover_Change.csv";
+  link.click();
+}
+
+
+/* ==========================================================
+   METADATA
+========================================================== */
+
+function renderMetadata(){
+
+  const m = stats.metadata;
+
+  document.getElementById("metadata").innerHTML = `
+    <strong>Satellite source:</strong> ${m.source}<br>
+    <strong>Classification:</strong> ${m.method}<br>
+    <strong>Baseline:</strong> ${m.baseline_period.start} to ${m.baseline_period.end}<br>
+    <strong>Current period:</strong> ${m.current_period.start} to ${m.current_period.end}<br>
+    <strong>2026 observations:</strong> ${m.observations["2026"]}<br>
+    <strong>2017 observations:</strong> ${m.observations["2017"]}<br>
+    <strong>Processing scale:</strong> ${m.scale_m} metres<br>
+    <strong>EA count in asset:</strong> ${formatNumber(m.ea_count,0)}<br>
+    <strong>Generated:</strong> ${m.generated_utc}<br><br>
+    <strong>Interpretation:</strong><br>
+    ${m.disclaimer}
+  `;
+}
+
+
+/* ==========================================================
+   INITIAL DATA LOADING
+========================================================== */
 
 async function loadDashboard(){
 
- try{
+  try{
 
-  const [boundaryResponse,statsResponse] =
-   await Promise.all([
-    fetch(EA_URL),
-    fetch(STATS_URL)
-   ]);
+    const [geoResponse,statsResponse] = await Promise.all([
+      fetch(EA_GEOJSON_URL),
+      fetch(STATS_URL)
+    ]);
 
-  if(!boundaryResponse.ok){
-   throw new Error("EA GeoJSON HTTP "+boundaryResponse.status);
+    if(!geoResponse.ok){
+      throw new Error(
+        "Could not load Census_EAs_Geo.json. HTTP " +
+        geoResponse.status
+      );
+    }
+
+    if(!statsResponse.ok){
+      throw new Error(
+        "Could not load data/stats.json. HTTP " +
+        statsResponse.status +
+        ". Run the Earth Engine workflow first."
+      );
+    }
+
+    eaGeoJSON = await geoResponse.json();
+    stats = await statsResponse.json();
+
+    if(!eaGeoJSON.features || !Array.isArray(eaGeoJSON.features)){
+      throw new Error("EA GeoJSON does not contain a features array.");
+    }
+
+    allFeatures = eaGeoJSON.features;
+
+    const validEA = allFeatures.filter(feature => getEAKey(feature));
+
+    if(validEA.length === 0){
+      throw new Error(
+        "No EA code was found. Check the EA GeoJSON property names."
+      );
+    }
+
+    allFeatures = validEA;
+
+    fillSelect(
+      "regionSelect",
+      uniqueValues(allFeatures,getRegion),
+      "All regions"
+    );
+
+    updateSelectors("region");
+    updateSelectors("lga");
+    updateSelectors("district");
+    updateSelectors("ward");
+
+    renderLegend();
+    renderMetadata();
+
+    updateRasterLayer();
+    updateAnalytics();
+
+    document.getElementById("baseSelect").value = "street";
+
+    setStatus(
+      "Dashboard loaded. " +
+      allFeatures.length +
+      " EA boundaries and land-cover statistics are available."
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    setStatus(
+      "Dashboard loading failed: " + error.message,
+      "error"
+    );
   }
-
-  if(!statsResponse.ok){
-   throw new Error("Statistics JSON HTTP "+statsResponse.status);
-  }
-
-  const geojson = await boundaryResponse.json();
-
-  statistics = await statsResponse.json();
-
-  boundaries = geojson.features || [];
-
-  records = statistics.ea_records || [];
-
-  updateSelectors();
-
-  createLegend();
-
-  updateMap();
-
-  document.getElementById("status").textContent =
-   `Loaded ${formatNumber(boundaries.length)} EA boundaries and ${formatNumber(records.length)} EA-year records.`;
-
-  document.getElementById("generated").textContent =
-   "Last automated update: "+(statistics.generated_utc || "not available");
-
-  document.getElementById("methodology").textContent =
-   "Source: Google Earth Engine Dynamic World V1, 10 m. " +
-   "2017 represents the calendar-year modal class. " +
-   "2026 represents observations available through the latest automated run. " +
-   "EA area statistics are calculated using pixel area. " +
-   "The change layer identifies pixels whose modal class differs between the two periods. " +
-   "These are satellite-derived estimates and have not been independently field-validated.";
-
- }catch(error){
-
-  document.getElementById("status").textContent =
-   "Unable to load dashboard data: "+error.message;
-
-  console.error(error);
-
- }
-
 }
 
 
-// ==========================================================
-// EVENTS
-// ==========================================================
+/* ==========================================================
+   EVENT LISTENERS
+========================================================== */
 
-["region","lga","district","ward"].forEach(id=>{
+document.getElementById("regionSelect")
+.addEventListener("change",()=>updateSelectors("region"));
 
- document.getElementById(id).addEventListener(
-  "change",
-  ()=>{
-   updateSelectors();
-   updateMap();
-  }
- );
+document.getElementById("lgaSelect")
+.addEventListener("change",()=>updateSelectors("lga"));
 
+document.getElementById("districtSelect")
+.addEventListener("change",()=>updateSelectors("district"));
+
+document.getElementById("wardSelect")
+.addEventListener("change",()=>updateSelectors("ward"));
+
+document.getElementById("applyBtn")
+.addEventListener("click",updateAnalytics);
+
+document.getElementById("resetBtn")
+.addEventListener("click",()=>{
+
+  ["regionSelect","lgaSelect","districtSelect","wardSelect","eaSelect"]
+    .forEach(id=>{
+      document.getElementById(id).value = "";
+    });
+
+  updateSelectors("region");
+  updateSelectors("lga");
+  updateSelectors("district");
+  updateSelectors("ward");
+
+  updateAnalytics();
 });
 
-document.getElementById("ea").addEventListener(
- "change",
- updateMap
-);
+document.getElementById("layerSelect")
+.addEventListener("change",updateRasterLayer);
 
-document.getElementById("period").addEventListener(
- "change",
- updateMap
-);
+document.getElementById("showRaster")
+.addEventListener("change",updateRasterLayer);
 
-document.getElementById("apply").addEventListener(
- "click",
- updateMap
-);
+document.getElementById("showEA")
+.addEventListener("change",()=>{
+  updateBoundaryLayer(selectedFeatures);
+});
 
-document.getElementById("reset").addEventListener(
- "click",
- ()=>{
+document.getElementById("baseSelect")
+.addEventListener("change",event=>{
 
-  ["region","lga","district","ward","ea"].forEach(id=>{
-   document.getElementById(id).value="";
-  });
+  if(activeBaseLayer){
+    map.removeLayer(activeBaseLayer);
+  }
 
-  updateSelectors();
-  updateMap();
+  activeBaseLayer = basemaps[event.target.value];
+  activeBaseLayer.addTo(map);
+});
 
- }
-);
+document.getElementById("downloadCSV")
+.addEventListener("click",exportSelectedCSV);
 
-document.getElementById("basemap").addEventListener(
- "change",
- event=>{
-
-  Object.values(basemaps).forEach(layer=>{
-   map.removeLayer(layer);
-  });
-
-  basemaps[event.target.value].addTo(map);
-
- }
-);
-
-document.getElementById("download").addEventListener(
- "click",
- exportCSV
-);
+document.getElementById("downloadAllCSV")
+.addEventListener("click",exportNationalCSV);
 
 
-// ==========================================================
-// START
-// ==========================================================
+/* ==========================================================
+   START
+========================================================== */
 
 loadDashboard();
 
@@ -1136,3 +1586,4 @@ loadDashboard();
 
 </body>
 </html>
+
