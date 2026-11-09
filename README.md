@@ -1,92 +1,137 @@
 
-# GBoS GEOAI
-## Gambia Persistent Land-Cover Change Intelligence (2017–2026)
+# GBoS GEOAI | Gambia Persistent Land-Cover Change Intelligence
 
-An automated satellite remote-sensing and land-cover monitoring system for The Gambia.
+A public geospatial dashboard for satellite-derived land-cover mapping and change analysis in The Gambia.
 
-### Main components
+## Project components
 
 - Google Earth Engine: satellite image processing.
-- Dynamic World V1: 10 m land-cover classification.
-- Census Enumeration Areas: EA-level spatial statistics.
-- Python: automated processing and output preparation.
-- Google Cloud Storage: temporary processing exports.
-- GitHub Actions: automated workflow.
-- Leaflet: public interactive map.
-- Chart.js: statistical visualisation.
-- GitHub Pages: public dashboard hosting.
+- Dynamic World V1: land-cover classification.
+- Google Cloud Storage: temporary export storage.
+- GitHub Actions: automated processing and updates.
+- Leaflet: interactive web mapping.
+- Chart.js: land-cover analytics.
+- Census_EAs_Geo.json: GBoS EA boundary reference.
 
-### Data periods
+## Comparison periods
 
-2017: Calendar-year baseline.
+- Baseline: 1 January 2017 to 1 January 2018.
+- Current: 1 January 2026 to the workflow execution date.
 
-2026: Year-to-date observations through the latest successful update.
+The 2026 output is year-to-date and is not a completed annual classification.
 
-### Land-cover classes
+## Dynamic World classes
 
-0. Water
-1. Trees
-2. Grass
-3. Flooded vegetation
-4. Crops
-5. Shrub and scrub
-6. Built area
-7. Bare ground
-8. Snow and ice
+| Value | Class |
+|---|---|
+| 0 | Water |
+| 1 | Trees |
+| 2 | Grass |
+| 3 | Flooded vegetation |
+| 4 | Crops |
+| 5 | Shrub and scrub |
+| 6 | Built area |
+| 7 | Bare ground |
+| 8 | Snow and ice |
 
-### Required GitHub configuration
+## Repository structure
 
-Repository Settings → Secrets and variables → Actions.
+```text
+Land-Cover-Change/
+├── index.html
+├── requirements.txt
+├── README.md
+├── Census_EAs_Geo.json
+├── scripts/
+│   └── run_pipeline.py
+├── data/
+│   └── .gitkeep
+├── tiles/
+│   └── .gitkeep
+└── .github/
+    └── workflows/
+        └── update-landcover.yml
+```
 
-Create these secrets:
+## GitHub configuration
 
-- EE_PROJECT_ID
-- EE_SERVICE_ACCOUNT_JSON
+### Repository secrets
 
-Create these variables:
+Add these under:
 
-- GEE_EA_ASSET
-- GCS_BUCKET
+Settings > Secrets and variables > Actions > Secrets.
 
-The Earth Engine asset should be a FeatureCollection containing the Gambian EA boundaries and the fields used by the processing script:
+| Secret | Value |
+|---|---|
+| EE_PROJECT_ID | Your Google Cloud project ID |
+| EE_SERVICE_ACCOUNT_JSON | Full service-account JSON key contents |
 
-- feacode
-- eaname
-- wardname
-- distname
-- lganame
-- RCO
+### Repository variables
 
-The public dashboard boundary file is:
+Add these under:
 
-https://raw.githubusercontent.com/silkysingz94-oss/Land-Cover-Change/main/Census_EAs_Geo.json
+Settings > Secrets and variables > Actions > Variables.
 
-### Run the workflow
+| Variable | Value |
+|---|---|
+| GCS_BUCKET | gambia-landcover-outputs |
+| GEE_EA_ASSET | projects/ee-aishaansu80/assets/GambiaEA_Final1 |
 
-1. Open the GitHub repository.
-2. Select Actions.
-3. Select GBoS GEOAI - Automated Land Cover Update.
-4. Select Run workflow.
-5. Wait for processing and publishing to finish.
+Change the bucket name if you created a different bucket.
 
-The workflow is also scheduled to run on the 5th of each month.
+## Google Cloud requirements
 
-### GitHub Pages
+1. Enable the Earth Engine API.
+2. Enable the Cloud Storage API.
+3. Create a Cloud Storage bucket.
+4. Register and authorise the service account for Earth Engine.
+5. Give the service account access to the EA asset.
+6. Give the service account permission to create and read objects in the bucket.
+7. Ensure the Earth Engine project is authorised for exports to Cloud Storage.
 
-Repository Settings → Pages.
+Never place service-account credentials in index.html or any public repository file.
 
-Select:
+## Running the workflow
 
-- Deploy from a branch
-- Branch: main
-- Folder: / (root)
+1. Open the GitHub Actions tab.
+2. Select Update Land Cover Intelligence.
+3. Select Run workflow.
+4. Select the main branch.
+5. Start the workflow.
+6. Wait for all Earth Engine exports and tile generation to finish.
 
-Public dashboard:
+The workflow is also scheduled for the fifth day of every month at 03:00 UTC.
 
-https://silkysingz94-oss.github.io/Land-Cover-Change/
+## Generated outputs
 
-### Important interpretation
+```text
+data/
+├── stats.json
+├── landcover_2017.csv
+├── landcover_2026.csv
+└── change_statistics.csv
 
-The 2026 map is year-to-date, not a complete annual observation. The change layer identifies pixels where the modal Dynamic World class differs between the two periods. It is not a direct measurement of the date or cause of change.
+tiles/
+├── landcover_2017/
+├── landcover_2026/
+└── landcover_change/
+```
 
-The land-cover maps and statistics are satellite-derived estimates and require independent validation before being used as official land-cover statistics.
+## Important limitations
+
+- Dynamic World is a satellite-derived land-cover product.
+- The 2026 classification covers available observations from 1 January to the processing date.
+- Cloud cover, observation availability, classification uncertainty and spatial resolution affect results.
+- The comparison is not a direct field-validated change inventory.
+- Satellite-derived results should not be interpreted as official GBoS land-cover statistics.
+- The raster tiles are generated for web display at zoom levels 5–11.
+- The current dashboard uses national raster tiles; selecting an EA or ward zooms to that area and filters its statistics, but does not generate a separately clipped raster for each selection.
+
+## Credits
+
+Produced by Ansu Singhateh  
+GIS Analyst | GIS / Cartography Unit  
+Gambia Bureau of Statistics
+
+GBoS GEOAI • Research and educational use
+
